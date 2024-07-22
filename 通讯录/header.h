@@ -1,5 +1,15 @@
 #pragma once
 
+#define MAX_CONTACTS 100
+
+struct ContactRecord {
+    char name[20];
+    char phone[12];
+    char address[50];
+    char postcode[8];
+    char email[20];
+};
+
 extern struct record student[100];											// ¶¨ÒåÒ»¸öÃûÎªrecordµÄ½á¹¹ÌåÀàĞÍ£¬ÓÃÀ´´æ´¢Ñ§ÉúµÄĞÅÏ¢
 
 extern void encrypt(char* pwd);												// ¶¨ÒåÒ»¸öÃûÎªencryptµÄº¯Êı£¬ÓÃÓÚ¶Ô´«ÈëµÄ×Ö·û´®½øĞĞ¼òµ¥µÄ¼ÓÃÜ´¦Àí
@@ -26,6 +36,9 @@ extern int dele();															//ÕâÊÇÒ»¸öÃûÎªdeleµÄº¯Êı£¬ÓÃÓÚ´ÓÍ¨Ñ¶Â¼ÖĞÉ¾³ıÁªÏ
 
 extern int sortbyname();													//ÕâÊÇÒ»¸öÃûÎªsortbynameµÄº¯Êı£¬ÓÃÓÚ½«Í¨Ñ¶Â¼ÖĞµÄÑ§Éú¼ÇÂ¼°´ÕÕĞÕÃûµÄ×ÖµäĞò½øĞĞÉıĞòÅÅĞò
 
-extern void readfile();														//¶¨ÒåÁËÒ»¸öº¯Êıreadfile£¬ÓÃÓÚ¶ÁÈ¡Ñ§ÉúÍ¨Ñ¶Â¼ÎÄ¼ş£¬²¢¶ÔÃ¿Ìõ¼ÇÂ¼½øĞĞ½âÃÜ´¦ÀíºÍ´òÓ¡
 
-extern void writefile();													//¶¨ÒåÁËÒ»¸öº¯Êıwritefile£¬ÓÃÓÚĞ´ÈëÑ§ÉúÍ¨Ñ¶Â¼ÎÄ¼ş£¬½«Ñ§ÉúÍ¨Ñ¶Â¼ÖĞµÄ¼ÇÂ¼ÒÔ¶ş½øÖÆ¸ñÊ½Ğ´ÈëÎÄ¼şÖĞ
+
+
+int readContacts(ContactRecord* contacts, int* num_contacts);
+
+int writeContacts(ContactRecord contacts[], int* num_contacts);
