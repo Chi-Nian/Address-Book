@@ -10,6 +10,9 @@
  *
  */
 
+ContactRecord contacts[MAX_CONTACTS];
+int num_contacts = 0;
+
 int main()																		//定义了主函数main
 {
 	printf("\t\t************************************************\n");
@@ -17,7 +20,7 @@ int main()																		//定义了主函数main
 	printf("\t\t*************************************************\n");
 	printf("按任意键进入主菜单\n");
 	_getch();																	//等待用户输入任意内容
-	readfile();																	// 调用readfile()函数读取保存的通讯录信息
+	readContacts(contacts, &num_contacts);
 	int selectnum;
 	while (1)																	//进入死循环，显示主菜单，根据用户的选择进行相应的操作。
 	{
@@ -26,7 +29,8 @@ int main()																		//定义了主函数main
 		{
 		case 0:
 		{
-			adduser();															// 添加用户信息
+			writeContacts(contacts, &num_contacts);
+			//adduser();															// 添加用户信息
 			break;
 		}
 		case 1:
@@ -61,7 +65,6 @@ int main()																		//定义了主函数main
 		}
 		case 7:
 		{
-			writefile();														// 保存当前通讯录信息，并输出BYE BYE!，然后结束程序
 			printf("BYE BYE!\n");
 			system("pause");													// 暂停程序的运行，等待用户在控制台按下任意键后继续。
 			getchar();

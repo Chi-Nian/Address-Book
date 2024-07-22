@@ -9,6 +9,7 @@
 #include<string.h>
 #include<conio.h>
 #include"header.h"
+#define MAX_INPUT 100
 
 
 struct record							// ¶¨ÒåÒ»¸öÃûÎªrecordµÄ½á¹¹ÌåÀàĞÍ£¬ÓÃÀ´´æ´¢Ñ§ÉúµÄĞÅÏ¢
@@ -368,70 +369,123 @@ int sortbyname()															//ÕâÊÇÒ»¸öÃûÎªsortbynameµÄº¯Êı£¬ÓÃÓÚ½«Í¨Ñ¶Â¼ÖĞµÄÑ
 }
 
 
-void readfile()															//¶¨ÒåÁËÒ»¸öº¯Êıreadfile£¬ÓÃÓÚ¶ÁÈ¡Ñ§ÉúÍ¨Ñ¶Â¼ÎÄ¼ş£¬²¢¶ÔÃ¿Ìõ¼ÇÂ¼½øĞĞ½âÃÜ´¦ÀíºÍ´òÓ¡¡£
+int readContacts(ContactRecord* contacts, int* num_contacts)
 {
-	FILE* fp = fopen("student_address_book.dat", "rb");					// ´ò¿ªÑ§ÉúÍ¨Ñ¶Â¼ÎÄ¼ş£¬ÒÔ¶ş½øÖÆ¸ñÊ½Ğ´ÈëµÄ·½Ê½´ò¿ª£¬²¢½«ÎÄ¼şÖ¸Õë¸³Öµ¸øfp±äÁ¿¡£
-
+	FILE* fp = fopen("contacts.txt", "rb");             // ÒÔ¶ş½øÖÆÖ»¶Á·½Ê½´ò¿ª
 	if (fp == NULL) {
-		printf("Failed to open file.\n");   							// Èç¹ûÎÄ¼ş´ò¿ªÊ§°Ü£¬ÔòÊä³ö´íÎóÌáÊ¾ĞÅÏ¢²¢·µ»Ø
-		return;
+		perror("´ò¿ªÎÄ¼şÊ§°Ü");
+		return -1;
 	}
 
-	//	struct record rec;												// ³õÊ¼»¯±äÁ¿
-	num = 0;
+	*num_contacts = 0;                                  // ³õÊ¼»¯ÁªÏµÈËÊıÁ¿Îª0
 
-	while (fread(&student[num], sizeof(struct record), 1, fp) == 1)		// Ñ­»·¶ÁÈ¡Ã¿Ìõ¼ÇÂ¼
+	struct ContactRecord tmp;
+
+	//%20sµÄÂß¼­ÊÇ ¶ÁÈ¡µÄÊ±ºòÒ»Ö±¶Á Ö±µ½Óö¼û¿Õ¸ñ/»»ĞĞ/»òÕß¶ÁÂú20¸ö
+	while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //ÕâÀïµÄ¸ñÊ½»¯¶ÁÈ¡ÓĞÎÊÌâ£¬Òª°´ÕÕÖ¸¶¨µÄ¸ñÊ½À´¶ÁÈ¡£¬²ÅÄÜ¶ÁÈ¡µ½
+		tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
 	{
-		encrypt(student[num].postcode);
-		encrypt(student[num].name);
-		encrypt(student[num].adress);
-		encrypt(student[num].phone);
-		encrypt(student[num].e_mail);									// ¶Ô¼ÇÂ¼½øĞĞ½âÃÜ´¦Àí
-		// Í³¼Æ¼ÇÂ¼×ÜÊı
-		printf("ĞÕÃû: %s\n", student[num].name);						// ´òÓ¡¼ÇÂ¼ĞÅÏ¢
-		printf("µØÖ·: %s\n", student[num].adress);
-		printf("ÓÊ±à: %s\n", student[num].postcode);
-		printf("µç»°: %s\n", student[num].phone);
-		printf("Email: %s\n", student[num].e_mail);
-		num++;
-		printf("-----------------------------\n");
+		contacts[*num_contacts] = tmp;
+		(*num_contacts)++;
+
+		// ´òÓ¡
+		printf("ÁªÏµÈË: %d\n", *num_contacts);
+		printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
+			tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
+		printf("-----------------------------------------------------------\n");
+		if (*num_contacts >= MAX_CONTACTS) break;        //ÏŞÖÆ×î´óÁªÏµÈËÊıÁ¿
 	}
-	fclose(fp);															// ¹Ø±ÕÎÄ¼ş
-	printf("Total number of records: %d\n", num);						// ´òÓ¡¼ÇÂ¼×ÜÊı
-	system("pause");
+
+	fclose(fp);  // ¹Ø±ÕÎÄ¼ş
+	fp = NULL;
+
+
+	return 0;
 }
 
 
-void writefile()														//¶¨ÒåÁËÒ»¸öº¯Êıwritefile£¬ÓÃÓÚĞ´ÈëÑ§ÉúÍ¨Ñ¶Â¼ÎÄ¼ş£¬½«Ñ§ÉúÍ¨Ñ¶Â¼ÖĞµÄ¼ÇÂ¼ÒÔ¶ş½øÖÆ¸ñÊ½Ğ´ÈëÎÄ¼şÖĞ¡£
+// ±ØĞë°Ñ»»ĞĞ¸øÁô×Å£¬²»È»»á¶ÁÈë´íÎó
+int writeContacts(ContactRecord contacts[], int* num_contacts)
 {
-
-	FILE* fp = fopen("student_address_book.dat", "wb");					// ´ò¿ªÑ§ÉúÍ¨Ñ¶Â¼ÎÄ¼ş£¬ÒÔ¶ş½øÖÆ¸ñÊ½Ğ´ÈëµÄ·½Ê½´ò¿ª£¬²¢½«ÎÄ¼şÖ¸Õë¸³Öµ¸øfp±äÁ¿
-	if (fp == NULL)														// Èç¹ûÎÄ¼ş´ò¿ªÊ§°Ü£¬ÔòÊä³ö´íÎóÌáÊ¾ĞÅÏ¢²¢·µ»Ø¡£
-	{
-		printf("Failed to open file.\n");
-		return;
-	}
-	struct record rec;													// ³õÊ¼»¯±äÁ¿
-	//	int num = 0;
-	//	num = get_record_count();											// Í³¼Æ¼ÇÂ¼×ÜÊı
-
-	for (int i = 0; i < num; i++)										// Ğ´Èë¼ÇÂ¼
-	{
-		rec = student[i];
-		// »ñÈ¡¼ÇÂ¼
-		encrypt(rec.postcode);
-
-		encrypt(rec.name);
-		encrypt(rec.adress);
-		encrypt(rec.phone);
-		encrypt(rec.e_mail);
-		// ¶Ô¼ÇÂ¼½øĞĞ¼ÓÃÜ´¦Àí
-		fwrite(&rec, sizeof(struct record), 1, fp);						// ½«¼ÇÂ¼Ğ´ÈëÎÄ¼ş
+	FILE* fp = fopen("contacts.txt", "a");  // ÒÔ×·¼Ó·½Ê½´ò¿ªÎÄ¼ş
+	if (fp == NULL) {
+		perror("´ò¿ªÎÄ¼şÊ§°Ü");
+		return -1;
 	}
 
-	fclose(fp);															// ¹Ø±ÕÎÄ¼ş
+	ContactRecord newContact;
+	char input[MAX_INPUT];
+	int new_contacts = 0;
 
-	printf("Write file success.\n");
+	printf("ÇëÊäÈëÁªÏµÈËĞÅÏ¢£¨ÊäÈë'q'ÍË³ö£©£º\n");
+
+	while (1) {
+
+		printf("ĞÕÃû: ");
+		fgets(newContact.name, sizeof(newContact.name), stdin);
+		if (strcmp(newContact.name, "q\n") == 0) break;
+		//if (strlen(newContact.name) < 4+1 || strlen(newContact.name) > 8+1) {   // + 1ÊÇÎªÁËËãÈë\n
+		//    printf("ÄúÊäÈëµÄĞÕÃûÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+		//    continue;
+		//}
+
+		printf("µç»°: ");
+		fgets(newContact.phone, sizeof(newContact.phone), stdin);
+
+		/*if (phoneLength != 7 && phoneLength != 8 && phoneLength != 11) {
+			printf("ÄúÊäÈëµÄµç»°ÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+			continue;
+		}*/
+
+
+		printf("µØÖ·: ");
+		fgets(newContact.address, sizeof(newContact.address), stdin);
+		/*if (0 < strlen(newContact.address) || strlen(newContact.address) < 15) {
+			printf("ÄúÊäÈëµÄµØÖ·ÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+			continue;
+		}*/
+
+
+		printf("ÓÊ±à: ");
+		fgets(newContact.postcode, sizeof(newContact.postcode), stdin);
+		/*if (0 < strlen(newContact.postcode) && strlen(newContact.postcode) < 6+1 || strlen(newContact.postcode) > 6+1) {
+			printf("ÄúÊäÈëµÄÓÊ±àÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+			continue;
+		}*/
+
+		printf("ÓÊÏä: ");
+		fgets(newContact.email, sizeof(newContact.email), stdin);
+		//if (0 < strlen(newContact.email) && strlen(newContact.email) < 9 || strlen(newContact.email) > 18) {    //¿ÉÒÔÔÊĞíÎª¿ÕµÄÊäÈë
+		//    printf("ÄúÊäÈëµÄÓÊÏäÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+		//    continue;
+		//}
+
+		// Ğ´ÈëÎÄ¼ş£¬±£Áô»»ĞĞ·û
+		fprintf(fp, "%s%s%s%s%s",
+			newContact.name,
+			newContact.phone,
+			newContact.address,
+			newContact.postcode,
+			newContact.email);
+
+		if (*num_contacts < MAX_CONTACTS) {
+			contacts[*num_contacts] = newContact;
+			(*num_contacts)++;
+			new_contacts++;
+		}
+		else {
+			printf("ÁªÏµÈËÊıÁ¿ÒÑ´ïµ½×î´óÏŞÖÆ£¬ÎŞ·¨Ìí¼Ó¸ü¶à\n");
+			break;
+		}
+
+		printf("ÁªÏµÈËÒÑÌí¼Ó¡£ÊÇ·ñ¼ÌĞøÌí¼Ó£¿(y/n): ");
+		fgets(input, MAX_INPUT, stdin);
+		if (input[0] != 'y' && input[0] != 'Y') break;
+	}
+
+	fclose(fp);
+	printf("³É¹¦Ğ´Èë %d ¸öĞÂÁªÏµÈËµ½ÎÄ¼ş¡£\n", new_contacts);
+	return 0;
 }
 
 
