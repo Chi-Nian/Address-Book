@@ -73,7 +73,7 @@ int main()																		//定义了主函数main
 		}
 	}
 	getchar();
-	printf("哈哈哈哈");
+
 	return 0;
 }
 
