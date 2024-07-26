@@ -73,7 +73,8 @@ int main()																		//協吶阻麼痕方main
 		}
 	}
 	getchar();
-	printf("込込込込");
+
+	printf("込込込込込込込込");
 	return 0;
 }
 

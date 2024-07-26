@@ -478,7 +478,7 @@ int writeContacts(ContactRecord contacts[], int* num_contacts)
 			break;
 		}
 
-		printf("联系人已添加。是否继续添加？(y/n): ");
+		printf("联系人已添加---是否继续添加？(y/n): ");
 		fgets(input, MAX_INPUT, stdin);
 		if (input[0] != 'y' && input[0] != 'Y') break;
 	}
