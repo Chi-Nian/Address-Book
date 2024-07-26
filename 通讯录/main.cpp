@@ -77,6 +77,13 @@ int main()																		//協吶阻麼痕方main
 	getchar();
 
 	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
 	return 0;
 }
 
