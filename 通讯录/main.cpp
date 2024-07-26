@@ -76,7 +76,17 @@ int main()																		//¶¨ÒåÁËÖ÷º¯Êımain
 	}
 	getchar();
 
-	cout << "¹ş¹ş¹ş¹ş¹ş¹ş¹ş" << endl;
+	int a = 1;
+	cout << "ÎÒÊÇÉµ±Æ" << endl;
+	cout << "¹ş¹ş¹ş¹ş¹ş" << endl;
+
+	if (a == 1) {
+		cout << "1" << endl;
+	}
+	else
+	{
+		cout << "2" << endl;
+	}
 	return 0;
 }
 
