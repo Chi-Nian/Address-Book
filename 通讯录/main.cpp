@@ -2,8 +2,10 @@
 #include<stdlib.h>
 #include<string.h>
 #include<conio.h>
+#include<iostream>
 #include"header.h"
 #define  _CRT_SECURE_NO_WARNINGS
+using namespace std;
 /*
  *
  *
@@ -74,7 +76,17 @@ int main()																		//協吶阻麼痕方main
 	}
 	getchar();
 
-	printf("込込込込込込込込");
+	int a = 1;
+	cout << "厘頁謬影" << endl;
+	cout << "込込込込込" << endl;
+
+	if (a == 1) {
+		cout << "1" << endl;
+	}
+	else
+	{
+		cout << "2" << endl;
+	}
 	return 0;
 }
 
