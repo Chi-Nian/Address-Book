@@ -76,17 +76,14 @@ int main()																		//協吶阻麼痕方main
 	}
 	getchar();
 
-	int a = 1;
-	cout << "厘頁謬影" << endl;
-	cout << "込込込込込" << endl;
-
-	if (a == 1) {
-		cout << "1" << endl;
-	}
-	else
-	{
-		cout << "2" << endl;
-	}
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
+	cout << "込込込込込込込" << endl;
+	cout << "11111111111111" << endl;
 	return 0;
 }
 
