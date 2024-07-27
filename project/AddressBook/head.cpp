@@ -122,3 +122,18 @@ int writeContacts(ContactRecord contacts[], int* num_contacts)
     printf("成功写入 %d 个新联系人到文件。\n", new_contacts);
     return 0;
 }
+
+int sortContactsByName(ContactRecord contacts[], int num_contacts)
+{
+    if (num_contacts == 0)  return 0;
+    for (int i = 0; i < num_contacts - 1; i++) {
+        for (int j = i + 1; j < num_contacts; j++) {
+            if (strcmp(contacts[i].name, contacts[j].name) > 0) {
+                ContactRecord temp = contacts[i];
+                contacts[i] = contacts[j];
+                contacts[j] = temp;
+            }
+        }
+    }
+    return 0;
+}
