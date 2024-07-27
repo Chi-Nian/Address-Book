@@ -9,7 +9,7 @@
 ```
 address-book/
 ├── documents/  -- 项目开发相关文档
-└── src/        -- 项目源码
+└── arch/        -- 项目架构
     ├── main.cpp
     ├── contact.h
     ├── contact.cpp
