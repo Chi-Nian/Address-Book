@@ -295,9 +295,12 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     }
 }
 
-
+/*
+* 按姓名排序
+*/
 int sortContactsByName(ContactRecord contacts[], int num_contacts)
 {
+
     if (num_contacts == 0)  return 0;
     for (int i = 0; i < num_contacts - 1; i++) {
         for (int j = i + 1; j < num_contacts; j++) {
