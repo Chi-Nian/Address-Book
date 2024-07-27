@@ -1,50 +1,54 @@
 #include "head.h"
 #include <stdbool.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <locale.h>
 #define MAX_INPUT 100
 #define _CRT_SECURE_NO_WARNINGS
 
 int readContacts(ContactRecord* contacts, int* num_contacts)
 {
-    FILE* fp = fopen("contacts.txt", "rb");             // ÒÔ¶ş½øÖÆÖ»¶Á·½Ê½´ò¿ª
+    FILE* fp = fopen("contacts.txt", "rb");             // ä»¥äºŒè¿›åˆ¶åªè¯»æ–¹å¼æ‰“å¼€
     if (fp == NULL) {
-        perror("´ò¿ªÎÄ¼şÊ§°Ü");
+        perror("æ‰“å¼€æ–‡ä»¶å¤±è´¥");
         return -1;
     }
 
-    *num_contacts = 0;                                  // ³õÊ¼»¯ÁªÏµÈËÊıÁ¿Îª0
+    *num_contacts = 0;                                  // åˆå§‹åŒ–è”ç³»äººæ•°é‡ä¸º0
 
     struct ContactRecord tmp;
 
-    //%20sµÄÂß¼­ÊÇ ¶ÁÈ¡µÄÊ±ºòÒ»Ö±¶Á Ö±µ½Óö¼û¿Õ¸ñ/»»ĞĞ/»òÕß¶ÁÂú20¸ö
-    while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //ÕâÀïµÄ¸ñÊ½»¯¶ÁÈ¡ÓĞÎÊÌâ£¬Òª°´ÕÕÖ¸¶¨µÄ¸ñÊ½À´¶ÁÈ¡£¬²ÅÄÜ¶ÁÈ¡µ½
+    //%20sçš„é€»è¾‘æ˜¯ è¯»å–çš„æ—¶å€™ä¸€ç›´è¯» ç›´åˆ°é‡è§ç©ºæ ¼/æ¢è¡Œ/æˆ–è€…è¯»æ»¡20ä¸ª
+    while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //è¿™é‡Œçš„æ ¼å¼åŒ–è¯»å–æœ‰é—®é¢˜ï¼Œè¦æŒ‰ç…§æŒ‡å®šçš„æ ¼å¼æ¥è¯»å–ï¼Œæ‰èƒ½è¯»å–åˆ°
         tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
     {
         contacts[*num_contacts] = tmp;
         (*num_contacts)++;
 
-        // ´òÓ¡
-        printf("ÁªÏµÈË: %d\n", *num_contacts);
+        // æ‰“å°
+        printf("è”ç³»äºº: %d\n", *num_contacts);
         printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
             tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
         printf("-----------------------------------------------------------\n");
-        if (*num_contacts >= MAX_CONTACTS) break;        //ÏŞÖÆ×î´óÁªÏµÈËÊıÁ¿
+        if (*num_contacts >= MAX_CONTACTS) break;        //é™åˆ¶æœ€å¤§è”ç³»äººæ•°é‡
     }
 
-    fclose(fp);  // ¹Ø±ÕÎÄ¼ş
+    fclose(fp);  // å…³é—­æ–‡ä»¶
     fp = NULL;
 
 
     return 0;
 }
 
-// ±ØĞë°Ñ»»ĞĞ¸øÁô×Å£¬²»È»»á¶ÁÈë´íÎó
+
+// å¿…é¡»æŠŠæ¢è¡Œç»™ç•™ç€ï¼Œä¸ç„¶ä¼šè¯»å…¥é”™è¯¯
 int writeContacts(ContactRecord contacts[], int* num_contacts)
 {
-    FILE* fp = fopen("contacts.txt", "a");  // ÒÔ×·¼Ó·½Ê½´ò¿ªÎÄ¼ş
+    FILE* fp = fopen("contacts.txt", "a");  // ä»¥è¿½åŠ æ–¹å¼æ‰“å¼€æ–‡ä»¶
     if (fp == NULL) {
-        perror("´ò¿ªÎÄ¼şÊ§°Ü");
+        perror("æ‰“å¼€æ–‡ä»¶å¤±è´¥");
         return -1;
     }
 
@@ -52,50 +56,50 @@ int writeContacts(ContactRecord contacts[], int* num_contacts)
     char input[MAX_INPUT];
     int new_contacts = 0;
 
-    printf("ÇëÊäÈëÁªÏµÈËĞÅÏ¢£¨ÊäÈë'q'ÍË³ö£©£º\n");
+    printf("è¯·è¾“å…¥è”ç³»äººä¿¡æ¯ï¼ˆè¾“å…¥'q'é€€å‡ºï¼‰ï¼š\n");
 
     while (1) {
 
-        printf("ĞÕÃû: ");
+        printf("å§“å: ");
         fgets(newContact.name, sizeof(newContact.name), stdin);
         if (strcmp(newContact.name, "q\n") == 0) break;
-        //if (strlen(newContact.name) < 4+1 || strlen(newContact.name) > 8+1) {   // + 1ÊÇÎªÁËËãÈë\n
-        //    printf("ÄúÊäÈëµÄĞÕÃûÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+        //if (strlen(newContact.name) < 4+1 || strlen(newContact.name) > 8+1) {   // + 1æ˜¯ä¸ºäº†ç®—å…¥\n
+        //    printf("æ‚¨è¾“å…¥çš„å§“åæœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥\n");
         //    continue;
         //}
 
-        printf("µç»°: ");
+        printf("ç”µè¯: ");
         fgets(newContact.phone, sizeof(newContact.phone), stdin);
 
         /*if (phoneLength != 7 && phoneLength != 8 && phoneLength != 11) {
-            printf("ÄúÊäÈëµÄµç»°ÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+            printf("æ‚¨è¾“å…¥çš„ç”µè¯æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥\n");
             continue;
         }*/
 
 
-        printf("µØÖ·: ");
+        printf("åœ°å€: ");
         fgets(newContact.address, sizeof(newContact.address), stdin);
         /*if (0 < strlen(newContact.address) || strlen(newContact.address) < 15) {
-            printf("ÄúÊäÈëµÄµØÖ·ÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+            printf("æ‚¨è¾“å…¥çš„åœ°å€æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥\n");
             continue;
         }*/
 
 
-        printf("ÓÊ±à: ");
+        printf("é‚®ç¼–: ");
         fgets(newContact.postcode, sizeof(newContact.postcode), stdin);
         /*if (0 < strlen(newContact.postcode) && strlen(newContact.postcode) < 6+1 || strlen(newContact.postcode) > 6+1) {
-            printf("ÄúÊäÈëµÄÓÊ±àÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+            printf("æ‚¨è¾“å…¥çš„é‚®ç¼–æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥\n");
             continue;
         }*/
 
-        printf("ÓÊÏä: ");
+        printf("é‚®ç®±: ");
         fgets(newContact.email, sizeof(newContact.email), stdin);
-        //if (0 < strlen(newContact.email) && strlen(newContact.email) < 9 || strlen(newContact.email) > 18) {    //¿ÉÒÔÔÊĞíÎª¿ÕµÄÊäÈë
-        //    printf("ÄúÊäÈëµÄÓÊÏäÓĞÎó£¬ÇëÖØĞÂÊäÈë\n");
+        //if (0 < strlen(newContact.email) && strlen(newContact.email) < 9 || strlen(newContact.email) > 18) {    //å¯ä»¥å…è®¸ä¸ºç©ºçš„è¾“å…¥
+        //    printf("æ‚¨è¾“å…¥çš„é‚®ç®±æœ‰è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥\n");
         //    continue;
         //}
 
-        // Ğ´ÈëÎÄ¼ş£¬±£Áô»»ĞĞ·û
+        // å†™å…¥æ–‡ä»¶ï¼Œä¿ç•™æ¢è¡Œç¬¦
         fprintf(fp, "%s%s%s%s%s",
             newContact.name,
             newContact.phone,
@@ -109,19 +113,188 @@ int writeContacts(ContactRecord contacts[], int* num_contacts)
             new_contacts++;
         }
         else {
-            printf("ÁªÏµÈËÊıÁ¿ÒÑ´ïµ½×î´óÏŞÖÆ£¬ÎŞ·¨Ìí¼Ó¸ü¶à\n");
+            printf("è”ç³»äººæ•°é‡å·²è¾¾åˆ°æœ€å¤§é™åˆ¶ï¼Œæ— æ³•æ·»åŠ æ›´å¤š\n");
             break;
         }
 
-        printf("ÁªÏµÈËÒÑÌí¼Ó¡£ÊÇ·ñ¼ÌĞøÌí¼Ó£¿(y/n): ");
+        printf("è”ç³»äººå·²æ·»åŠ ã€‚æ˜¯å¦ç»§ç»­æ·»åŠ ï¼Ÿ(y/n): ");
         fgets(input, MAX_INPUT, stdin);
         if (input[0] != 'y' && input[0] != 'Y') break;
     }
 
     fclose(fp);
-    printf("³É¹¦Ğ´Èë %d ¸öĞÂÁªÏµÈËµ½ÎÄ¼ş¡£\n", new_contacts);
+    printf("æˆåŠŸå†™å…¥ %d ä¸ªæ–°è”ç³»äººåˆ°æ–‡ä»¶ã€‚\n", new_contacts);
     return 0;
 }
+
+void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
+    if (*num_contacts >= MAX_CONTACTS) {
+        printf("è”ç³»äººåˆ—è¡¨å·²æ»¡ï¼Œæ— æ³•æ·»åŠ æ–°è”ç³»äººã€‚\n");
+        return;
+    }
+
+    struct ContactRecord newContact;
+    printf("\n=== æ’å…¥æ–°è”ç³»äºº ===\n");
+
+    // è·å–å§“å
+    printf("è¯·è¾“å…¥å§“å (æœ€å¤š19ä¸ªå­—ç¬¦): ");
+    scanf(" %19[^\n]", newContact.name);
+
+    // è·å–ç”µè¯å·ç 
+    printf("è¯·è¾“å…¥ç”µè¯å·ç  (æœ€å¤š11ä¸ªå­—ç¬¦): ");
+    scanf(" %11[^\n]", newContact.phone);
+
+    // è·å–åœ°å€
+    printf("è¯·è¾“å…¥åœ°å€ (æœ€å¤š49ä¸ªå­—ç¬¦): ");
+    scanf(" %49[^\n]", newContact.address);
+
+    // è·å–é‚®ç¼–
+    printf("è¯·è¾“å…¥é‚®ç¼– (æœ€å¤š7ä¸ªå­—ç¬¦): ");
+    scanf(" %7[^\n]", newContact.postcode);
+
+    // è·å–é‚®ç®±
+    printf("è¯·è¾“å…¥é‚®ç®± (æœ€å¤š19ä¸ªå­—ç¬¦): ");
+    scanf(" %19[^\n]", newContact.email);
+
+    char confirm;
+    printf("\n=== è¯·ç¡®è®¤ä»¥ä¸‹ä¿¡æ¯ ===\n");
+    printf("å§“å: %s\n", newContact.name);
+    printf("ç”µè¯: %s\n", newContact.phone);
+    printf("åœ°å€: %s\n", newContact.address);
+    printf("é‚®ç¼–: %s\n", newContact.postcode);
+    printf("é‚®ç®±: %s\n", newContact.email);
+    printf("\nç¡®è®¤æ·»åŠ è¿™æ¡è®°å½•å—? (Y/N): ");
+    scanf(" %c", &confirm);
+
+    if (toupper(confirm) == 'Y') {
+        contacts[*num_contacts] = newContact;
+        (*num_contacts)++;
+        printf("æ–°è”ç³»äººå·²æˆåŠŸæ·»åŠ ã€‚\n");
+    }
+    else {
+        printf("å·²å–æ¶ˆæ·»åŠ æ–°è”ç³»äººã€‚\n");
+    }
+}
+void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
+    if (*num_contacts >= MAX_CONTACTS) {
+        printf("è”ç³»äººåˆ—è¡¨å·²æ»¡ï¼Œæ— æ³•æ·»åŠ æ–°è”ç³»äººã€‚\n");
+        return;
+    }
+
+    struct ContactRecord newContact;
+    printf("\n=== æ’å…¥æ–°è”ç³»äºº ===\n");
+
+    // è·å–å§“å
+    printf("è¯·è¾“å…¥å§“å (æœ€å¤š19ä¸ªå­—ç¬¦): ");
+    scanf(" %19[^\n]", newContact.name);
+
+    // è·å–ç”µè¯å·ç 
+    printf("è¯·è¾“å…¥ç”µè¯å·ç  (æœ€å¤š11ä¸ªå­—ç¬¦): ");
+    scanf(" %11[^\n]", newContact.phone);
+
+    // è·å–åœ°å€
+    printf("è¯·è¾“å…¥åœ°å€ (æœ€å¤š49ä¸ªå­—ç¬¦): ");
+    scanf(" %49[^\n]", newContact.address);
+
+    // è·å–é‚®ç¼–
+    printf("è¯·è¾“å…¥é‚®ç¼– (æœ€å¤š7ä¸ªå­—ç¬¦): ");
+    scanf(" %7[^\n]", newContact.postcode);
+
+    // è·å–é‚®ç®±
+    printf("è¯·è¾“å…¥é‚®ç®± (æœ€å¤š19ä¸ªå­—ç¬¦): ");
+    scanf(" %19[^\n]", newContact.email);
+
+    char confirm;
+    printf("\n=== è¯·ç¡®è®¤ä»¥ä¸‹ä¿¡æ¯ ===\n");
+    printf("å§“å: %s\n", newContact.name);
+    printf("ç”µè¯: %s\n", newContact.phone);
+    printf("åœ°å€: %s\n", newContact.address);
+    printf("é‚®ç¼–: %s\n", newContact.postcode);
+    printf("é‚®ç®±: %s\n", newContact.email);
+    printf("\nç¡®è®¤æ·»åŠ è¿™æ¡è®°å½•å—? (Y/N): ");
+    scanf(" %c", &confirm);
+
+    if (toupper(confirm) == 'Y') {
+        contacts[*num_contacts] = newContact;
+        (*num_contacts)++;
+        printf("æ–°è”ç³»äººå·²æˆåŠŸæ·»åŠ ã€‚\n");
+    }
+    else {
+        printf("å·²å–æ¶ˆæ·»åŠ æ–°è”ç³»äººã€‚\n");
+    }
+}
+
+//3.9 æ˜¾ç¤ºæ ‡ç­¾ç³»ç»Ÿç•Œé¢(æ‹“å±•)
+void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
+    char tags[MAX_TAGS] = { 0 };  // ç”¨äºè®°å½•æ¯ä¸ªå­—æ¯æ˜¯å¦å‡ºç°
+    char uniqueTags[MAX_TAGS][4] = { {0} };  // ç”¨äºå­˜å‚¨å”¯ä¸€æ ‡ç­¾
+    int uniqueTagCount = 0;
+    int choice;
+
+    // æ”¶é›†æ‰€æœ‰å”¯ä¸€çš„æ ‡ç­¾ï¼ˆå§“åé¦–å­—æ¯ï¼‰
+    for (int i = 0; i < num_contacts; i++) {
+        char firstLetter[4] = { 0 };
+        strncpy(firstLetter, contacts[i].name, 3);
+        int isNewTag = 1;
+        for (int j = 0; j < uniqueTagCount; j++) {
+            if (strcmp(uniqueTags[j], firstLetter) == 0) {
+                isNewTag = 0;
+                break;
+            }
+        }
+        if (isNewTag) {
+            strncpy(uniqueTags[uniqueTagCount], firstLetter, 3);
+            uniqueTagCount++;
+        }
+    }
+
+    while (1) {
+        // æ˜¾ç¤ºæ ‡ç­¾ç³»ç»Ÿç•Œé¢
+        printf("\næ ‡ç­¾ç³»ç»Ÿç•Œé¢ (æŒ‰å§“åé¦–å­—æ¯)\n");
+        printf("============================\n");
+        for (int i = 0; i < uniqueTagCount; i++) {
+            printf("%s ", uniqueTags[i]);
+        }
+        printf("\n============================\n");
+        printf("1. æŸ¥çœ‹ç‰¹å®šæ ‡ç­¾çš„è”ç³»äºº\n");
+        printf("2. è¿”å›ä¸»èœå•\n");
+        printf("è¯·é€‰æ‹©æ“ä½œ: ");
+
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1: {
+            char tag[4];
+            printf("è¯·è¾“å…¥è¦æŸ¥çœ‹çš„æ ‡ç­¾ï¼ˆæœ€å¤š3ä¸ªå­—ç¬¦ï¼‰: ");
+            scanf(" %3s", tag);
+
+            printf("\næ ‡ç­¾ '%s' çš„è”ç³»äººï¼š\n", tag);
+            int found = 0;
+            for (int i = 0; i < num_contacts; i++) {
+                if (strncmp(contacts[i].name, tag, strlen(tag)) == 0) {
+                    found = 1;
+                    printf("---------------------------\n");
+                    printf("å§“å: %s\n", contacts[i].name);
+                    printf("ç”µè¯: %s\n", contacts[i].phone);
+                    printf("åœ°å€: %s\n", contacts[i].address);
+                    printf("é‚®ç¼–: %s\n", contacts[i].postcode);
+                    printf("é‚®ç®±: %s\n", contacts[i].email);
+                    printf("---------------------------\n");
+                }
+            }
+            if (!found) {
+                printf("æ²¡æœ‰æ‰¾åˆ°ä»¥ '%s' å¼€å¤´çš„è”ç³»äººã€‚\n", tag);
+            }
+            break;
+        }
+        case 2:
+            return;
+        default:
+            printf("æ— æ•ˆçš„é€‰æ‹©ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚\n");
+        }
+    }
+}
+
 
 int sortContactsByName(ContactRecord contacts[], int num_contacts)
 {
