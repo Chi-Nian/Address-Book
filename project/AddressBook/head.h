@@ -12,9 +12,9 @@ struct ContactRecord {
 };
 
 // 1.2读取联系人信息
-int readContacts(struct ContactRecord contacts[], int* num_contacts);
+int readContacts(ContactRecord* contacts, int* num_contacts);
 /*
-负责人:
+负责人: <炽念>
 功能: 从文件中读取联系人信息，并存储到 contacts 数组中。
 参数:
     contacts[]: 结构体数组，用于存储读取的联系人信息。
@@ -24,10 +24,12 @@ int readContacts(struct ContactRecord contacts[], int* num_contacts);
     -1: 读取失败
 */
 
+
+
 // 1.3写入联系人信息
-int writeContacts(struct ContactRecord contacts[], int num_contacts);
+int writeContacts(struct ContactRecord contacts[], int* num_contacts);
 /*
-负责人:
+负责人: <炽念>
 功能: 将 contacts 数组中的联系人信息写入文件。
 参数:
     contacts[]: 结构体数组，包含要写入的联系人信息。
