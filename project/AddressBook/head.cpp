@@ -1,7 +1,10 @@
 #include "head.h"
 #include <stdbool.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <locale.h>
 #define MAX_INPUT 100
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -122,4 +125,123 @@ int writeContacts(ContactRecord contacts[], int* num_contacts)
     fclose(fp);
     printf("成功写入 %d 个新联系人到文件。\n", new_contacts);
     return 0;
+}
+//3.6 显示插入记录界面
+void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
+    if (*num_contacts >= MAX_CONTACTS) {
+        printf("联系人列表已满，无法添加新联系人。\n");
+        return;
+    }
+
+    struct ContactRecord newContact;
+    printf("\n=== 插入新联系人 ===\n");
+
+    // 获取姓名
+    printf("请输入姓名 (最多19个字符): ");
+    scanf(" %19[^\n]", newContact.name);
+
+    // 获取电话号码
+    printf("请输入电话号码 (最多11个字符): ");
+    scanf(" %11[^\n]", newContact.phone);
+
+    // 获取地址
+    printf("请输入地址 (最多49个字符): ");
+    scanf(" %49[^\n]", newContact.address);
+
+    // 获取邮编
+    printf("请输入邮编 (最多7个字符): ");
+    scanf(" %7[^\n]", newContact.postcode);
+
+    // 获取邮箱
+    printf("请输入邮箱 (最多19个字符): ");
+    scanf(" %19[^\n]", newContact.email);
+
+    char confirm;
+    printf("\n=== 请确认以下信息 ===\n");
+    printf("姓名: %s\n", newContact.name);
+    printf("电话: %s\n", newContact.phone);
+    printf("地址: %s\n", newContact.address);
+    printf("邮编: %s\n", newContact.postcode);
+    printf("邮箱: %s\n", newContact.email);
+    printf("\n确认添加这条记录吗? (Y/N): ");
+    scanf(" %c", &confirm);
+
+    if (toupper(confirm) == 'Y') {
+        contacts[*num_contacts] = newContact;
+        (*num_contacts)++;
+        printf("新联系人已成功添加。\n");
+    }
+    else {
+        printf("已取消添加新联系人。\n");
+    }
+}
+//3.9 显示标签系统界面(拓展)
+void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
+    char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
+    char uniqueTags[MAX_TAGS][4] = { {0} };  // 用于存储唯一标签
+    int uniqueTagCount = 0;
+    int choice;
+
+    // 收集所有唯一的标签（姓名首字母）
+    for (int i = 0; i < num_contacts; i++) {
+        char firstLetter[4] = { 0 };
+        strncpy(firstLetter, contacts[i].name, 3);
+        int isNewTag = 1;
+        for (int j = 0; j < uniqueTagCount; j++) {
+            if (strcmp(uniqueTags[j], firstLetter) == 0) {
+                isNewTag = 0;
+                break;
+            }
+        }
+        if (isNewTag) {
+            strncpy(uniqueTags[uniqueTagCount], firstLetter, 3);
+            uniqueTagCount++;
+        }
+    }
+
+    while (1) {
+        // 显示标签系统界面
+        printf("\n标签系统界面 (按姓名首字母)\n");
+        printf("============================\n");
+        for (int i = 0; i < uniqueTagCount; i++) {
+            printf("%s ", uniqueTags[i]);
+        }
+        printf("\n============================\n");
+        printf("1. 查看特定标签的联系人\n");
+        printf("2. 返回主菜单\n");
+        printf("请选择操作: ");
+
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1: {
+            char tag[4];
+            printf("请输入要查看的标签（最多3个字符）: ");
+            scanf(" %3s", tag);
+
+            printf("\n标签 '%s' 的联系人：\n", tag);
+            int found = 0;
+            for (int i = 0; i < num_contacts; i++) {
+                if (strncmp(contacts[i].name, tag, strlen(tag)) == 0) {
+                    found = 1;
+                    printf("---------------------------\n");
+                    printf("姓名: %s\n", contacts[i].name);
+                    printf("电话: %s\n", contacts[i].phone);
+                    printf("地址: %s\n", contacts[i].address);
+                    printf("邮编: %s\n", contacts[i].postcode);
+                    printf("邮箱: %s\n", contacts[i].email);
+                    printf("---------------------------\n");
+                }
+            }
+            if (!found) {
+                printf("没有找到以 '%s' 开头的联系人。\n", tag);
+            }
+            break;
+        }
+        case 2:
+            return;
+        default:
+            printf("无效的选择，请重新输入。\n");
+        }
+    }
 }
