@@ -8,7 +8,15 @@
 #include <sstream>
 
 #pragma warning(disable : 4996)
+#define MAX_TAGS 26  // A到Z的26个字母
+multimap <string, int> mp;
 using namespace std;
+string fileName = "contacts.txt";
+vector <int> idx;
+
+//-------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------Data----------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------
 
 int readContacts(struct ContactRecord contacts[], int* num_contacts)
 
@@ -66,7 +74,73 @@ int readContacts(struct ContactRecord contacts[], int* num_contacts)
     return 0;
 }
 
+void entry_txt(string& line) {
+    ofstream fin;//输入信息
+    fin.open(fileName, ios::app);
+    fin << line << endl;//'\n' 
+    fin.close();
+    ofstream outputFile("group.txt");
 
+    // 检查文件是否打开成功
+    if (!outputFile.is_open()) {
+        std::cerr << "Failed to open file." << std::endl;
+        return;
+    }
+
+    // 将  写入文件
+    for (const auto& pair : mp) {
+        outputFile << pair.first << " " << pair.second << std::endl;
+    }
+
+    // 关闭文件
+    outputFile.close();
+
+}
+
+int writeContacts(struct ContactRecord contacts[], int num_contacts) {
+    ofstream fin;//输入信息
+    fin.open(fileName);
+    for (int i = 0; i < num_contacts; i++) {
+        if (contacts[i].name[0] == '$') {//被逻辑删除的联系人不会被保存
+            continue;
+        }
+        string Person;
+        Person += contacts[i].name, Person += ' ';
+        Person += contacts[i].phone, Person += ' ', Person += contacts[i].address, Person += ' ';
+        Person += contacts[i].postcode, Person += ' ', Person += contacts[i].email;
+        if (Person == "") {
+            return -1;
+        }
+        entry_txt(Person);
+    }
+    return 0;
+}
+
+// 验证用户身份
+bool authenticateUser(const char* filename, const char* username, const char* password)
+{
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        cout << "无法打开文件：" << filename << endl;
+        return false;
+    }
+
+    string fileUsername;
+    string filePassword;
+
+    while (file >> fileUsername >> filePassword)
+    {
+        if (fileUsername == username && filePassword == password)
+        {
+            file.close();
+            return true;
+        }
+    }
+
+    file.close();
+    return false;
+}
 /*
 
     一个汉字在计算机中占 2~4 个字节，具体取决于使用的编码方式，文件->高级保存选项查看编码格式
@@ -106,6 +180,21 @@ int sortContactsByName(ContactRecord contacts[], int num_contacts)
     return 0;
 }
 
+void encrypt(char* pwd)					//这是一个名为encrypt的函数，用于对传入的字符串进行简单的加密处理
+{
+    int pwdlen = strlen(pwd);			// 获取字符串的长度，用于循环处理每个字符。
+    for (int i = 0; i < pwdlen; i++)	//遍历字符串中的每个字符。
+    {
+        pwd[i] ^= 15;					// 对于每个字符，使用异或运算对其进行加密处理
+    }
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------Service------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------
+ 
+
 // 服务层：模糊搜索联系人
 int fuzzySearchContacts( ContactRecord contacts[], int num_contacts,  char* keyword) {
     for (int i = 0; i < num_contacts; ++i) {
@@ -134,32 +223,6 @@ int multiConditionSearch( ContactRecord contacts[], int num_contacts,  char* nam
         }
     }
     return -1;  // 未找到联系人
-}
-
-// 验证用户身份
-bool authenticateUser(const char* filename, const char* username, const char* password)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "无法打开文件：" << filename << endl;
-        return false;
-    }
-
-    string fileUsername;
-    string filePassword;
-
-    while (file >> fileUsername >> filePassword)
-    {
-        if (fileUsername == username && filePassword == password)
-        {
-            file.close();
-            return true;
-        }
-    }
-
-    file.close();
-    return false;
 }
 
 
@@ -263,7 +326,7 @@ int searchContactByEmail(ContactRecord contacts[], int num_contacts, char* email
     }
     return -1;  // 未找到联系人
 }
-string fileName = "contacts.txt";
+
 //2.8
 int deleteContact(struct ContactRecord contacts[], int* num_contacts, char* key, int delete_type) {
     
@@ -381,47 +444,6 @@ int deleteContact(struct ContactRecord contacts[], int* num_contacts, char* key,
     return -1;
 }
 
-//1.3
-void entry_txt(string& line) {
-    ofstream fin;//输入信息
-    fin.open(fileName, ios::app);
-    fin << line << endl;//'\n' 
-    fin.close();
-    ofstream outputFile("group.txt");
-
-    // 检查文件是否打开成功
-    if (!outputFile.is_open()) {
-        std::cerr << "Failed to open file." << std::endl;
-        return ;
-    }
-
-    // 将  写入文件
-    for (const auto& pair : mp) {
-        outputFile << pair.first << " " << pair.second << std::endl;
-    }
-
-    // 关闭文件
-    outputFile.close();
-
-}
-int writeContacts(struct ContactRecord contacts[], int num_contacts) {
-    ofstream fin;//输入信息
-    fin.open(fileName);
-    for (int i = 0; i < num_contacts; i++) {
-        if (contacts[i].name[0] == '$') {//被逻辑删除的联系人不会被保存
-            continue;
-        }
-        string Person;
-        Person += contacts[i].name, Person += ' ';
-        Person += contacts[i].phone, Person += ' ', Person += contacts[i].address, Person += ' ';
-        Person += contacts[i].postcode, Person += ' ', Person += contacts[i].email;
-        if (Person == "") {
-            return -1;
-        }
-        entry_txt(Person);
-    }
-    return 0;
-}
 
 //2.16
 
@@ -485,9 +507,6 @@ int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts, char
 }
 
 
-multimap <string, int> mp;
-
-
 int addContact(ContactRecord contacts[], int* num_contacts)
 {
     printf("\n\t\t\t**************** 请输入用户信息 ****************\n");
@@ -543,7 +562,7 @@ void listContacts(ContactRecord contacts[], int num_contacts)
     _getch();										// 等待用户按任意键
     return;											// 返回，结束函数
 }
-vector <int> idx;
+
 int searchContactByName(ContactRecord contacts[], int num_contacts, char* name)
 {
                 											// 定义一个整型变量mark，用来标记是否查找到了符合条件的学生信息
@@ -585,7 +604,173 @@ int searchContactByPhone(ContactRecord contacts[], int num_contacts, char* phone
     return - 1;
 }
 
+// 2.13 添加分组
+int addGroup(struct ContactRecord contacts[], int* num_contacts, char* group) {
+    char new_group[20];
+    printf("请输入要添加的新分组名： ");
+    scanf("%s", new_group);
 
+    //1.先选择查找方式查找到要插入该分组的联系人
+    int choice;
+    printf("请选择查找方式：\n");
+    printf("1.按姓名查找\n");
+    printf("2.按电话查找\n");
+    printf("3.按地址查找\n");
+    printf("4.按邮编查找\n");
+    printf("5.按邮箱查找\n");
+    printf("6.模糊查找\n");
+    printf("7.多条件查找\n");
+    scanf("%d", &choice);
+    /*getchar(); */                       //捕获换行符
+
+    //2.再去执行相应的查找
+    int index = -1;   //保存返回的索引
+    int a = -10086;
+    switch (choice) {
+    case 1: {
+        char name[20];
+        printf("输入要查找的联系人姓名：");
+        scanf("%s", name);
+        index = searchContactByName(contacts, *num_contacts, name);
+        for (int i : idx) {
+            cout << i;
+            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
+            printf("\t\t\t姓名: %s\n", contacts[i].name);
+            printf("\t\t\t电话: %s\n", contacts[i].phone);
+            printf("\t\t\t地址: %s\n", contacts[i].address);
+            printf("\t\t\te-mail:%s\n", contacts[i].email);
+            printf("\t\t\t************************************************\n");
+
+        }
+        if (!idx.empty()) {
+            cout << "输入你想添加的联系人的序号";
+
+            cin >> a;
+            mp.insert({ new_group, a });
+            idx.clear();//由于idx是全局变量，所以使用后必须清空 
+        }
+        break;
+    }
+    case 2: {
+        char phone[20];
+        printf("输入要查找的联系人电话：");
+        scanf("%19s", phone);
+        index = searchContactByPhone(contacts, *num_contacts, phone);
+        if (index >= 0)
+            mp.insert({ new_group, a });
+        break;
+    }
+    case 3: {
+        char address[20];
+        printf("输入要查找的联系人地址：");
+        scanf("%19s", address);
+        index = searchContactByAddress(contacts, *num_contacts, address);
+        for (int i : idx) {
+            cout << i;
+            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
+            printf("\t\t\t姓名: %s\n", contacts[i].name);
+            printf("\t\t\t电话: %s\n", contacts[i].phone);
+            printf("\t\t\t地址: %s\n", contacts[i].address);
+            printf("\t\t\te-mail:%s\n", contacts[i].email);
+            printf("\t\t\t************************************************\n");
+
+        }
+        if (!idx.empty()) {
+            cout << "输入你想添加的联系人的序号";
+
+            cin >> a;
+            mp.insert({ new_group, a });
+            idx.clear();//由于idx是全局变量，所以使用后必须清空 
+        }
+        break;
+    }
+    case 4: {
+        char postcode[8];
+        printf("输入要查找的联系人邮编：");
+        scanf("%7s", postcode);
+        index = searchContactByPostcode(contacts, *num_contacts, postcode);
+        for (int i : idx) {
+            cout << i;
+            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
+            printf("\t\t\t姓名: %s\n", contacts[i].name);
+            printf("\t\t\t电话: %s\n", contacts[i].phone);
+            printf("\t\t\t地址: %s\n", contacts[i].address);
+            printf("\t\t\te-mail:%s\n", contacts[i].email);
+            printf("\t\t\t************************************************\n");
+
+        }
+        if (!idx.empty()) {
+            cout << "输入你想添加的联系人的序号";
+
+            cin >> a;
+            mp.insert({ new_group, a });
+            idx.clear();//由于idx是全局变量，所以使用后必须清空 
+        }
+        break;
+    }
+    case 5: {
+        char e_mail[20];
+        printf("输入要查找的联系人邮箱：");
+        scanf("%19s", e_mail);
+        index = searchContactByEmail(contacts, *num_contacts, e_mail);
+        if (index >= 0)
+            mp.insert({ new_group, a });
+        break;
+    }
+          /*case 6: {
+              char keyword[50];
+              printf("输入要查找的联系人关键字：");
+              scanf("%49s", keyword);
+              index = fuzzySearchContacts(contacts, *num_contacts, keyword);
+              break;
+          }*/
+    case 6: {
+        char name[20];
+        char phone[20];
+        char address[20];
+        char postcode[8];
+        char e_mail[20];
+        printf("输入要查找的联系人信息：");
+        scanf("19%s", name);
+        scanf("%19s", phone);
+        scanf("%19s", address);
+        scanf("%7s", postcode);
+        scanf("%19s", e_mail);
+        index = multiConditionSearch(contacts, *num_contacts, name, phone, address, postcode, e_mail);
+        for (int i : idx) {
+            cout << i;
+            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
+            printf("\t\t\t姓名: %s\n", contacts[i].name);
+            printf("\t\t\t电话: %s\n", contacts[i].phone);
+            printf("\t\t\t地址: %s\n", contacts[i].address);
+            printf("\t\t\te-mail:%s\n", contacts[i].email);
+            printf("\t\t\t************************************************\n");
+
+        }
+        if (!idx.empty()) {
+            cout << "输入你想添加的联系人的序号";
+
+            cin >> a;
+            mp.insert({ new_group, a });
+            idx.clear();//由于idx是全局变量，所以使用后必须清空 
+        }
+        break;
+    }
+    default:
+        printf("没有这个查找方式选项.\n");
+        return -1;
+    }
+
+    //3.检查查找结果并更改分组
+    if (index != -1) {
+
+        printf("添加新分组成功！\n");
+    }
+    else {
+        printf("未找到该联系人，添加分组失败\n");
+    }
+    return 0;				//返回0表示成功添加分组
+}
 
 //int addTagToContact(struct ContactRecord contact[], int num_contacts, char* contactName, char* tag) {
 //    int findres = searchContactByName(contact, num_contacts, contactName);
@@ -608,12 +793,13 @@ int searchContactByPhone(ContactRecord contacts[], int num_contacts, char* phone
 //}
 
 
-/*
-函数名:showDeleteRecordInterface
-功能:显示删除界面
-完成者:老胡
 
-*/
+//-------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------View-----------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------
+
+
+
 void showDeleteRecordInterface(struct ContactRecord contacts[], int *num_contacts) {
 
     system("cls");
@@ -652,12 +838,6 @@ void showDeleteRecordInterface(struct ContactRecord contacts[], int *num_contact
     else return;
 }
 
-/*
-函数名:showSearchInterface
-功能:显示查找界面
-完成者:老胡
-
-*/
 void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
     system("cls");
     printf("\t\t************* 请输入查找方式 ***********\n\n");
@@ -761,7 +941,6 @@ void showMainInterface()
     cout << "****** 0，退出通讯录 ******" << endl;
     cout << "***************************" << endl;
 }
-#define MAX_TAGS 26  // A到Z的26个字母
 
 void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
     if (*num_contacts >= MAX_CONTACTS) {
@@ -811,6 +990,7 @@ void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contact
         printf("已取消添加新联系人。\n");
     }
 }
+
 void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
 {
     char* tmp = NULL;
@@ -838,6 +1018,7 @@ void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
     else
         return;
 }
+
 //3.9 显示标签系统界面(拓展)
 void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
@@ -906,16 +1087,8 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     }
 }
 
-void encrypt(char* pwd)					//这是一个名为encrypt的函数，用于对传入的字符串进行简单的加密处理
-{
-    int pwdlen = strlen(pwd);			// 获取字符串的长度，用于循环处理每个字符。
-    for (int i = 0; i < pwdlen; i++)	//遍历字符串中的每个字符。
-    {
-        pwd[i] ^= 15;					// 对于每个字符，使用异或运算对其进行加密处理
-    }
-}
-// 声明一个名为num的整型变量
 
+// 声明一个名为num的整型变量
 int menuSelect(struct ContactRecord contacts[], int* num_contacts)
 {
     int select = 0;
@@ -1036,172 +1209,4 @@ void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) 
         printf("没有所选的序号，请重新选择。");
         scanf("%d", &choice);
     }
-}
-
-// 2.13 添加分组
- int addGroup(struct ContactRecord contacts[], int *num_contacts, char* group) {
-    char new_group[20];
-    printf("请输入要添加的新分组名： ");
-    scanf("%s", new_group);
-
-    //1.先选择查找方式查找到要插入该分组的联系人
-    int choice;
-    printf("请选择查找方式：\n");
-    printf("1.按姓名查找\n");
-    printf("2.按电话查找\n");
-    printf("3.按地址查找\n");
-    printf("4.按邮编查找\n");
-    printf("5.按邮箱查找\n");
-    printf("6.模糊查找\n");
-    printf("7.多条件查找\n");
-    scanf("%d", &choice);
-    /*getchar(); */                       //捕获换行符
-
-    //2.再去执行相应的查找
-    int index = -1;   //保存返回的索引
-    int a = -10086;
-    switch (choice) {
-    case 1: {
-        char name[20];
-        printf("输入要查找的联系人姓名：");
-        scanf("%s", name);
-        index = searchContactByName(contacts, *num_contacts, name);
-        for (int i : idx) {
-            cout << i;
-            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
-            printf("\t\t\t姓名: %s\n", contacts[i].name);
-            printf("\t\t\t电话: %s\n", contacts[i].phone);
-            printf("\t\t\t地址: %s\n", contacts[i].address);
-            printf("\t\t\te-mail:%s\n", contacts[i].email);
-            printf("\t\t\t************************************************\n");
-
-        }
-        if (!idx.empty()) {
-            cout << "输入你想添加的联系人的序号";
-
-            cin >> a;
-            mp.insert({ new_group, a });
-            idx.clear();//由于idx是全局变量，所以使用后必须清空 
-        }
-        break;
-    }
-    case 2: {
-        char phone[20];
-        printf("输入要查找的联系人电话：");
-        scanf("%19s", phone);
-        index = searchContactByPhone(contacts, *num_contacts, phone);
-        if(index>=0)
-            mp.insert({ new_group, a });
-        break;
-    }
-    case 3: {
-        char address[20];
-        printf("输入要查找的联系人地址：");
-        scanf("%19s", address);
-        index = searchContactByAddress(contacts, *num_contacts, address);
-        for (int i : idx) {
-            cout << i;
-            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
-            printf("\t\t\t姓名: %s\n", contacts[i].name);
-            printf("\t\t\t电话: %s\n", contacts[i].phone);
-            printf("\t\t\t地址: %s\n", contacts[i].address);
-            printf("\t\t\te-mail:%s\n", contacts[i].email);
-            printf("\t\t\t************************************************\n");
-
-        }
-        if (!idx.empty()) {
-            cout << "输入你想添加的联系人的序号";
-
-            cin >> a;
-            mp.insert({ new_group, a });
-            idx.clear();//由于idx是全局变量，所以使用后必须清空 
-        }
-        break;
-    }
-    case 4: {
-        char postcode[8];
-        printf("输入要查找的联系人邮编：");
-        scanf("%7s", postcode);
-        index = searchContactByPostcode(contacts, *num_contacts, postcode);
-        for (int i : idx) {
-            cout << i;
-            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
-            printf("\t\t\t姓名: %s\n", contacts[i].name);
-            printf("\t\t\t电话: %s\n", contacts[i].phone);
-            printf("\t\t\t地址: %s\n", contacts[i].address);
-            printf("\t\t\te-mail:%s\n", contacts[i].email);
-            printf("\t\t\t************************************************\n");
-
-        }
-        if (!idx.empty()) {
-           cout << "输入你想添加的联系人的序号";
-
-                    cin >> a;
-                    mp.insert({ new_group, a });
-                    idx.clear();//由于idx是全局变量，所以使用后必须清空 
-        }
-        break;
-    }
-    case 5: {
-        char e_mail[20];
-        printf("输入要查找的联系人邮箱：");
-        scanf("%19s", e_mail);
-        index = searchContactByEmail(contacts, *num_contacts, e_mail);
-        if(index>=0)
-            mp.insert({ new_group, a });
-        break;
-    }
-    /*case 6: {
-        char keyword[50];
-        printf("输入要查找的联系人关键字：");
-        scanf("%49s", keyword);
-        index = fuzzySearchContacts(contacts, *num_contacts, keyword);
-        break;
-    }*/
-    case 6: {
-        char name[20];
-        char phone[20];
-        char address[20];
-        char postcode[8];
-        char e_mail[20];
-        printf("输入要查找的联系人信息：");
-        scanf("19%s", name);
-        scanf("%19s", phone);
-        scanf("%19s", address);
-        scanf("%7s", postcode);
-        scanf("%19s", e_mail);
-        index = multiConditionSearch(contacts, *num_contacts, name, phone, address, postcode, e_mail);
-        for (int i : idx) {
-            cout << i;
-            printf("\t\t\t************* 以下是您查找的用户信息 ***********\n");
-            printf("\t\t\t姓名: %s\n", contacts[i].name);
-            printf("\t\t\t电话: %s\n", contacts[i].phone);
-            printf("\t\t\t地址: %s\n", contacts[i].address);
-            printf("\t\t\te-mail:%s\n", contacts[i].email);
-            printf("\t\t\t************************************************\n");
-
-        }
-        if (!idx.empty()) {
-            cout << "输入你想添加的联系人的序号";
-
-            cin >> a;
-            mp.insert({ new_group, a });
-            idx.clear();//由于idx是全局变量，所以使用后必须清空 
-        }
-        break;
-    }
-    default:
-        printf("没有这个查找方式选项.\n");
-        return -1;
-    }
-
-    //3.检查查找结果并更改分组
-    if (index != -1) {
-        
-        printf("添加新分组成功！\n");
-    }
-    else {
-        printf("未找到该联系人，添加分组失败\n");
-    }
-    return 0;				//返回0表示成功添加分组
 }
