@@ -1,5 +1,7 @@
 ﻿#include<iostream>
 #include <fstream>
+#include <iomanip>
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include"head.h"
@@ -929,17 +931,20 @@ void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
     else return;
 }
 
+
 void showMainInterface()
 {
-    cout << "***************************" << endl;
-    cout << "***** 1，增加通讯信息 *****" << endl;
-    cout << "***** 2，查找通讯信息 *****" << endl;
-    cout << "***** 3，修改通讯信息 *****" << endl;
-    cout << "***** 4，删除通讯信息 *****" << endl;
-    cout << "***** 5，显示所有记录 *****" << endl;
-    cout << "****** 6，联系人分组 ******" << endl;
-    cout << "****** 0，退出通讯录 ******" << endl;
-    cout << "***************************" << endl;
+    std::cout << "\t\t\t\t\t\t***************************" << std::endl;
+    std::cout << "\t\t\t\t\t\t*    通讯录管理系统       *" << std::endl;
+    std::cout << "\t\t\t\t\t\t***************************" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 1. 增加通讯信息         *" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 2. 查找通讯信息         *" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 3. 修改通讯信息         *" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 4. 删除通讯信息         *" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 5. 显示所有记录         *" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 6. 联系人分组           *" << std::endl;
+    std::cout << "\t\t\t\t\t\t* 0. 退出通讯录           *" << std::endl;
+    std::cout << "\t\t\t\t\t\t***************************" << std::endl;
 }
 
 void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {

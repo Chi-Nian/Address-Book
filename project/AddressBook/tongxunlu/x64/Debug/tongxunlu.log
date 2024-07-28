@@ -1,2 +1,3 @@
-﻿  LINK : 没有找到 C:\MyCode\Github\Address-Book\project\AddressBook\x64\Debug\tongxunlu.exe 或上一个增量链接没有生成它；正在执行完全链接
+﻿  fuction.cpp
+C:\MyCode\Github\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(187,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
   tongxunlu.vcxproj -> C:\MyCode\Github\Address-Book\project\AddressBook\x64\Debug\tongxunlu.exe
