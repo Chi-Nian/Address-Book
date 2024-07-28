@@ -296,6 +296,7 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
 }
 
 /*
+* 负责人：桃子
 * 按姓名排序
 */
 int sortContactsByName(ContactRecord contacts[], int num_contacts)
