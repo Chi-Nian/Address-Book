@@ -10,228 +10,204 @@
 
 int readContacts(ContactRecord* contacts, int* num_contacts)
 {
-    FILE* fp = fopen("contacts.txt", "rb");             // �Զ�����ֻ����ʽ��
+    FILE* fp = fopen("contacts.txt", "rb");             // 以二进制只读方式打开
     if (fp == NULL) {
-        perror("���ļ�ʧ��");
+        perror("打开文件失败");
         return -1;
     }
-
-    *num_contacts = 0;                                  // ��ʼ����ϵ������Ϊ0
-
+    *num_contacts = 0;                                  // 初始化联系人数量为0
     struct ContactRecord tmp;
-
-    //%20s���߼��� ��ȡ��ʱ��һֱ�� ֱ�������ո�/����/���߶���20��
-    while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //����ĸ�ʽ����ȡ�����⣬Ҫ����ָ���ĸ�ʽ����ȡ�����ܶ�ȡ��
+    //%20s的逻辑是 读取的时候一直读 直到遇见空格/换行/或者读满20个
+    while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //这里的格式化读取有问题，要按照指定的格式来读取，才能读取到
         tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
     {
         contacts[*num_contacts] = tmp;
         (*num_contacts)++;
-
-        // ��ӡ
-        printf("��ϵ��: %d\n", *num_contacts);
+        // 打印
+        printf("联系人: %d\n", *num_contacts);
         printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
             tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
         printf("-----------------------------------------------------------\n");
-        if (*num_contacts >= MAX_CONTACTS) break;        //���������ϵ������
+        if (*num_contacts >= MAX_CONTACTS) break;        //限制最大联系人数量
     }
-
-    fclose(fp);  // �ر��ļ�
+    fclose(fp);  // 关闭文件
     fp = NULL;
-
-
     return 0;
 }
-
-
-// ����ѻ��и����ţ���Ȼ��������
+// 必须把换行给留着，不然会读入错误
 int writeContacts(ContactRecord contacts[], int* num_contacts)
 {
-    FILE* fp = fopen("contacts.txt", "a");  // ��׷�ӷ�ʽ���ļ�
+    FILE* fp = fopen("contacts.txt", "a");  // 以追加方式打开文件
     if (fp == NULL) {
-        perror("���ļ�ʧ��");
+        perror("打开文件失败");
         return -1;
     }
-
     ContactRecord newContact;
     char input[MAX_INPUT];
     int new_contacts = 0;
-
-    printf("��������ϵ����Ϣ������'q'�˳�����\n");
-
+    printf("请输入联系人信息（输入'q'退出）：\n");
     while (1) {
-
-        printf("����: ");
+        printf("姓名: ");
         fgets(newContact.name, sizeof(newContact.name), stdin);
         if (strcmp(newContact.name, "q\n") == 0) break;
-        //if (strlen(newContact.name) < 4+1 || strlen(newContact.name) > 8+1) {   // + 1��Ϊ������\n
-        //    printf("�������������������������\n");
+        //if (strlen(newContact.name) < 4+1 || strlen(newContact.name) > 8+1) {   // + 1是为了算入\n
+        //    printf("您输入的姓名有误，请重新输入\n");
         //    continue;
         //}
-
-        printf("�绰: ");
+        printf("电话: ");
         fgets(newContact.phone, sizeof(newContact.phone), stdin);
-
         /*if (phoneLength != 7 && phoneLength != 8 && phoneLength != 11) {
-            printf("������ĵ绰��������������\n");
+            printf("您输入的电话有误，请重新输入\n");
             continue;
         }*/
-
-
-        printf("��ַ: ");
+        printf("地址: ");
         fgets(newContact.address, sizeof(newContact.address), stdin);
         /*if (0 < strlen(newContact.address) || strlen(newContact.address) < 15) {
-            printf("������ĵ�ַ��������������\n");
+            printf("您输入的地址有误，请重新输入\n");
             continue;
         }*/
-
-
-        printf("�ʱ�: ");
+        printf("邮编: ");
         fgets(newContact.postcode, sizeof(newContact.postcode), stdin);
         /*if (0 < strlen(newContact.postcode) && strlen(newContact.postcode) < 6+1 || strlen(newContact.postcode) > 6+1) {
-            printf("��������ʱ���������������\n");
+            printf("您输入的邮编有误，请重新输入\n");
             continue;
         }*/
-
-        printf("����: ");
+        printf("邮箱: ");
         fgets(newContact.email, sizeof(newContact.email), stdin);
-        //if (0 < strlen(newContact.email) && strlen(newContact.email) < 9 || strlen(newContact.email) > 18) {    //��������Ϊ�յ�����
-        //    printf("�������������������������\n");
+        //if (0 < strlen(newContact.email) && strlen(newContact.email) < 9 || strlen(newContact.email) > 18) {    //可以允许为空的输入
+        //    printf("您输入的邮箱有误，请重新输入\n");
         //    continue;
         //}
-
-        // д���ļ���������з�
+        // 写入文件，保留换行符
         fprintf(fp, "%s%s%s%s%s",
             newContact.name,
             newContact.phone,
             newContact.address,
             newContact.postcode,
             newContact.email);
-
         if (*num_contacts < MAX_CONTACTS) {
             contacts[*num_contacts] = newContact;
             (*num_contacts)++;
             new_contacts++;
         }
         else {
-            printf("��ϵ�������Ѵﵽ������ƣ��޷���Ӹ���\n");
+            printf("联系人数量已达到最大限制，无法添加更多\n");
             break;
         }
-
-        printf("��ϵ������ӡ��Ƿ������ӣ�(y/n): ");
+        printf("联系人已添加。是否继续添加？(y/n): ");
         fgets(input, MAX_INPUT, stdin);
         if (input[0] != 'y' && input[0] != 'Y') break;
     }
-
     fclose(fp);
-    printf("�ɹ�д�� %d ������ϵ�˵��ļ���\n", new_contacts);
+    printf("成功写入 %d 个新联系人到文件。\n", new_contacts);
     return 0;
 }
 
 void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
     if (*num_contacts >= MAX_CONTACTS) {
-        printf("��ϵ���б��������޷��������ϵ�ˡ�\n");
+        printf("联系人列表已满，无法添加新联系人。\n");
         return;
     }
 
     struct ContactRecord newContact;
-    printf("\n=== ��������ϵ�� ===\n");
+    printf("\n=== 插入新联系人 ===\n");
 
-    // ��ȡ����
-    printf("���������� (���19���ַ�): ");
+    // 获取姓名
+    printf("请输入姓名 (最多19个字符): ");
     scanf(" %19[^\n]", newContact.name);
 
-    // ��ȡ�绰����
-    printf("������绰���� (���11���ַ�): ");
+    // 获取电话号码
+    printf("请输入电话号码 (最多11个字符): ");
     scanf(" %11[^\n]", newContact.phone);
 
-    // ��ȡ��ַ
-    printf("�������ַ (���49���ַ�): ");
+    // 获取地址
+    printf("请输入地址 (最多49个字符): ");
     scanf(" %49[^\n]", newContact.address);
 
-    // ��ȡ�ʱ�
-    printf("�������ʱ� (���7���ַ�): ");
+    // 获取邮编
+    printf("请输入邮编 (最多7个字符): ");
     scanf(" %7[^\n]", newContact.postcode);
 
-    // ��ȡ����
-    printf("���������� (���19���ַ�): ");
+    // 获取邮箱
+    printf("请输入邮箱 (最多19个字符): ");
     scanf(" %19[^\n]", newContact.email);
 
     char confirm;
-    printf("\n=== ��ȷ��������Ϣ ===\n");
-    printf("����: %s\n", newContact.name);
-    printf("�绰: %s\n", newContact.phone);
-    printf("��ַ: %s\n", newContact.address);
-    printf("�ʱ�: %s\n", newContact.postcode);
-    printf("����: %s\n", newContact.email);
-    printf("\nȷ�����������¼��? (Y/N): ");
+    printf("\n=== 请确认以下信息 ===\n");
+    printf("姓名: %s\n", newContact.name);
+    printf("电话: %s\n", newContact.phone);
+    printf("地址: %s\n", newContact.address);
+    printf("邮编: %s\n", newContact.postcode);
+    printf("邮箱: %s\n", newContact.email);
+    printf("\n确认添加这条记录吗? (Y/N): ");
     scanf(" %c", &confirm);
 
     if (toupper(confirm) == 'Y') {
         contacts[*num_contacts] = newContact;
         (*num_contacts)++;
-        printf("����ϵ���ѳɹ���ӡ�\n");
+        printf("新联系人已成功添加。\n");
     }
     else {
-        printf("��ȡ���������ϵ�ˡ�\n");
+        printf("已取消添加新联系人。\n");
     }
 }
 void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
     if (*num_contacts >= MAX_CONTACTS) {
-        printf("��ϵ���б��������޷��������ϵ�ˡ�\n");
+        printf("联系人列表已满，无法添加新联系人。\n");
         return;
     }
 
     struct ContactRecord newContact;
-    printf("\n=== ��������ϵ�� ===\n");
+    printf("\n=== 插入新联系人 ===\n");
 
-    // ��ȡ����
-    printf("���������� (���19���ַ�): ");
+    // 获取姓名
+    printf("请输入姓名 (最多19个字符): ");
     scanf(" %19[^\n]", newContact.name);
 
-    // ��ȡ�绰����
-    printf("������绰���� (���11���ַ�): ");
+    // 获取电话号码
+    printf("请输入电话号码 (最多11个字符): ");
     scanf(" %11[^\n]", newContact.phone);
 
-    // ��ȡ��ַ
-    printf("�������ַ (���49���ַ�): ");
+    // 获取地址
+    printf("请输入地址 (最多49个字符): ");
     scanf(" %49[^\n]", newContact.address);
 
-    // ��ȡ�ʱ�
-    printf("�������ʱ� (���7���ַ�): ");
+    // 获取邮编
+    printf("请输入邮编 (最多7个字符): ");
     scanf(" %7[^\n]", newContact.postcode);
 
-    // ��ȡ����
-    printf("���������� (���19���ַ�): ");
+    // 获取邮箱
+    printf("请输入邮箱 (最多19个字符): ");
     scanf(" %19[^\n]", newContact.email);
 
     char confirm;
-    printf("\n=== ��ȷ��������Ϣ ===\n");
-    printf("����: %s\n", newContact.name);
-    printf("�绰: %s\n", newContact.phone);
-    printf("��ַ: %s\n", newContact.address);
-    printf("�ʱ�: %s\n", newContact.postcode);
-    printf("����: %s\n", newContact.email);
-    printf("\nȷ�����������¼��? (Y/N): ");
+    printf("\n=== 请确认以下信息 ===\n");
+    printf("姓名: %s\n", newContact.name);
+    printf("电话: %s\n", newContact.phone);
+    printf("地址: %s\n", newContact.address);
+    printf("邮编: %s\n", newContact.postcode);
+    printf("邮箱: %s\n", newContact.email);
+    printf("\n确认添加这条记录吗? (Y/N): ");
     scanf(" %c", &confirm);
 
     if (toupper(confirm) == 'Y') {
         contacts[*num_contacts] = newContact;
         (*num_contacts)++;
-        printf("����ϵ���ѳɹ���ӡ�\n");
+        printf("新联系人已成功添加。\n");
     }
     else {
-        printf("��ȡ���������ϵ�ˡ�\n");
+        printf("已取消添加新联系人。\n");
     }
 }
 
-//3.9 ��ʾ��ǩϵͳ����(��չ)
+//3.9 显示标签系统界面(拓展)
 void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
-    char tags[MAX_TAGS] = { 0 };  // ���ڼ�¼ÿ����ĸ�Ƿ����
-    char uniqueTags[MAX_TAGS][4] = { {0} };  // ���ڴ洢Ψһ��ǩ
+    char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
+    char uniqueTags[MAX_TAGS][4] = { {0} };  // 用于存储唯一标签
     int uniqueTagCount = 0;
     int choice;
 
-    // �ռ�����Ψһ�ı�ǩ����������ĸ��
+    // 收集所有唯一的标签（姓名首字母）
     for (int i = 0; i < num_contacts; i++) {
         char firstLetter[4] = { 0 };
         strncpy(firstLetter, contacts[i].name, 3);
@@ -249,50 +225,70 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     }
 
     while (1) {
-        // ��ʾ��ǩϵͳ����
-        printf("\n��ǩϵͳ���� (����������ĸ)\n");
+        // 显示标签系统界面
+        printf("\n标签系统界面 (按姓名首字母)\n");
         printf("============================\n");
         for (int i = 0; i < uniqueTagCount; i++) {
             printf("%s ", uniqueTags[i]);
         }
         printf("\n============================\n");
-        printf("1. �鿴�ض���ǩ����ϵ��\n");
-        printf("2. �������˵�\n");
-        printf("��ѡ�����: ");
+        printf("1. 查看特定标签的联系人\n");
+        printf("2. 返回主菜单\n");
+        printf("请选择操作: ");
 
         scanf("%d", &choice);
 
         switch (choice) {
         case 1: {
             char tag[4];
-            printf("������Ҫ�鿴�ı�ǩ�����3���ַ���: ");
+            printf("请输入要查看的标签（最多3个字符）: ");
             scanf(" %3s", tag);
 
-            printf("\n��ǩ '%s' ����ϵ�ˣ�\n", tag);
+            printf("\n标签 '%s' 的联系人：\n", tag);
             int found = 0;
             for (int i = 0; i < num_contacts; i++) {
                 if (strncmp(contacts[i].name, tag, strlen(tag)) == 0) {
                     found = 1;
                     printf("---------------------------\n");
-                    printf("����: %s\n", contacts[i].name);
-                    printf("�绰: %s\n", contacts[i].phone);
-                    printf("��ַ: %s\n", contacts[i].address);
-                    printf("�ʱ�: %s\n", contacts[i].postcode);
-                    printf("����: %s\n", contacts[i].email);
+                    printf("姓名: %s\n", contacts[i].name);
+                    printf("电话: %s\n", contacts[i].phone);
+                    printf("地址: %s\n", contacts[i].address);
+                    printf("邮编: %s\n", contacts[i].postcode);
+                    printf("邮箱: %s\n", contacts[i].email);
                     printf("---------------------------\n");
                 }
             }
             if (!found) {
-                printf("û���ҵ��� '%s' ��ͷ����ϵ�ˡ�\n", tag);
+                printf("没有找到以 '%s' 开头的联系人。\n", tag);
             }
             break;
         }
         case 2:
             return;
         default:
-            printf("��Ч��ѡ�����������롣\n");
+            printf("无效的选择，请重新输入。\n");
         }
     }
+}
+
+/*
+* * 负责人：桃子
+* 按姓名排序
+*/
+int sortContactsByName(ContactRecord contacts[], int num_contacts)
+{
+    
+    if (num_contacts == 0)  return 0;
+    for (int i = 0; i < num_contacts - 1; i++) {
+        for (int j = i + 1; j < num_contacts; j++) {
+            if (strcmp(contacts[i].name, contacts[j].name) > 0) {
+                ContactRecord temp = contacts[i];
+                contacts[i] = contacts[j];
+                contacts[j] = temp;
+            }
+        }
+    }
+    return 0;
 }
 
 int showLoginInterface() {
@@ -344,28 +340,7 @@ void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) 
         printf("没有所选的序号，请重新选择。");
         scanf("%d", &choice);
     }
-}
-
-// 2.13 添加分组(拓展)
-int addGroup(struct ContactRecord contacts[], int* num_contacts, char* group) {
-    char new_group[20];
-    printf("请输入要添加的新分组名： ");
-    scanf("%19s", new_group);
-
-    //1.先选择查找方式查找到要插入该分组的联系人
-    int choice;
-    printf("请选择查找方式：\n");
-    printf("1.按姓名查找\n");
-    printf("2.按电话查找\n");
-    printf("3.按地址查找\n");
-    printf("4.按邮编查找\n");
-    printf("5.按邮箱查找\n");
-    printf("6.模糊查找\n");
-    printf("7.多条件查找\n");
-    scanf("%d", &choice);
-    getchar();                        //捕获换行符
-
-    //2.再去执行相应的查找
+}    //2.再去执行相应的查找
     int index = -1;                  //保存返回的索引
     switch (choice) {
     case 1: {
