@@ -1,0 +1,5 @@
+﻿  fuction.cpp
+D:\code\c++_study\tongxunlu\tongxunlu\fuction.cpp(907,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  Main.cpp
+  正在生成代码...
+  tongxunlu.vcxproj -> D:\code\c++_study\tongxunlu\x64\Debug\tongxunlu.exe
