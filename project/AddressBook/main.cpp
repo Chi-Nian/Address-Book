@@ -1,10 +1,18 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include "head.cpp"
-#define _CRT_SECURE_NO_WARNINGS
+#include"head.h"
+#include <iostream>
+using namespace std;
 
 int main() {
-    
-
-    return 0;
+	ContactRecord contacts[MAX_CONTACTS];
+	int num_contacts=0;
+	int flag = -1;
+	flag=showLoginInterface();
+	if (flag == 0) {
+		readContacts(contacts,& num_contacts);
+		menuSelect(contacts, &num_contacts);
+		writeContacts(contacts, num_contacts);
+	}
+	
+	return 0;
 }
+
