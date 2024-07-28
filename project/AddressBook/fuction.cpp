@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include"head.h"
 #include <conio.h>
-
+#include <iomanip>
+#include <string>
 #include <sstream>
 
 #pragma warning(disable : 4996)
@@ -931,15 +932,36 @@ void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
 
 void showMainInterface()
 {
-    cout << "***************************" << endl;
-    cout << "***** 1，增加通讯信息 *****" << endl;
-    cout << "***** 2，查找通讯信息 *****" << endl;
-    cout << "***** 3，修改通讯信息 *****" << endl;
-    cout << "***** 4，删除通讯信息 *****" << endl;
-    cout << "***** 5，显示所有记录 *****" << endl;
-    cout << "****** 6，联系人分组 ******" << endl;
-    cout << "****** 0，退出通讯录 ******" << endl;
-    cout << "***************************" << endl;
+    const char* title = "通讯录管理系统";
+    const char* options[] = {
+        "1. 增加通讯信息",
+        "2. 查找通讯信息",
+        "3. 修改通讯信息",
+        "4. 删除通讯信息",
+        "5. 显示所有记录",
+        "6. 联系人分组",
+        "0. 退出通讯录"
+    };
+    const int numOptions = sizeof(options) / sizeof(options[0]);
+    const int width = 40;
+
+    // 清屏（注意：这在某些系统上可能不起作用）
+    std::cout << "\033[2J\033[1;1H";
+
+    // 打印标题
+    std::cout << std::string(width, '*') << std::endl;
+    std::cout << "*" << std::setw((width - 2 - strlen(title)) / 2) << " "
+        << title
+        << std::setw((width - 1 - strlen(title)) / 2) << "*" << std::endl;
+    std::cout << std::string(width, '*') << std::endl;
+
+    // 打印选项
+    for (int i = 0; i < numOptions; ++i) {
+        std::cout << "* " << std::left << std::setw(width - 4) << options[i] << " *" << std::endl;
+    }
+
+    // 打印底部边框
+    std::cout << std::string(width, '*') << std::endl;
 }
 
 void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
