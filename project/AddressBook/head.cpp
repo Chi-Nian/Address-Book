@@ -295,6 +295,30 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     }
 }
 
+/*
+* 按姓名排序
+*/
+int sortContactsByName(ContactRecord contacts[], int num_contacts)
+{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int showLoginInterface() {
     char username[20];
     char password[20];
@@ -344,28 +368,7 @@ void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) 
         printf("没有所选的序号，请重新选择。");
         scanf("%d", &choice);
     }
-}
-
-// 2.13 添加分组(拓展)
-int addGroup(struct ContactRecord contacts[], int* num_contacts, char* group) {
-    char new_group[20];
-    printf("请输入要添加的新分组名： ");
-    scanf("%19s", new_group);
-
-    //1.先选择查找方式查找到要插入该分组的联系人
-    int choice;
-    printf("请选择查找方式：\n");
-    printf("1.按姓名查找\n");
-    printf("2.按电话查找\n");
-    printf("3.按地址查找\n");
-    printf("4.按邮编查找\n");
-    printf("5.按邮箱查找\n");
-    printf("6.模糊查找\n");
-    printf("7.多条件查找\n");
-    scanf("%d", &choice);
-    getchar();                        //捕获换行符
-
-    //2.再去执行相应的查找
+}    //2.再去执行相应的查找
     int index = -1;                  //保存返回的索引
     switch (choice) {
     case 1: {
