@@ -24,6 +24,7 @@
     <ProjectGuid>{05480dc1-67b9-433e-8274-b8644f8b03d5}</ProjectGuid>
     <RootNamespace>MyTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>AddressBook</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -129,7 +130,7 @@
   <ItemGroup>
     <ClCompile Include="head.cpp" />
     <ClCompile Include="head.h" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
