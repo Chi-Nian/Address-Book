@@ -246,13 +246,8 @@ int multiConditionSearch( ContactRecord contacts[], int num_contacts,  char* nam
 // 删除分组
 int deleteGroup(struct ContactRecord contacts[], int* num_contacts,  char* group)
 {
-    int original_count = *num_contacts;
-    int i = 0;
-
-    auto it = mp.find(group);
-    if (it != mp.end()) {
-        mp.erase(it);
-    }
+    string tmp(group);
+    return mp.erase(tmp);// 返回删除的联系人数量
 
     //while (i < *num_contacts)
     //{
@@ -271,7 +266,7 @@ int deleteGroup(struct ContactRecord contacts[], int* num_contacts,  char* group
     //    }
     //}
 
-    return 0; // 返回删除的联系人数量
+    
 }
 
 // 2.12 按分组查找联系人
@@ -509,6 +504,7 @@ int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts, char
 
 int addContact(ContactRecord contacts[], int* num_contacts)
 {
+    
     printf("\n\t\t\t**************** 请输入用户信息 ****************\n");
     printf("\t\t\t输入姓名:");
     scanf("%s", contacts[*num_contacts].name);									// 获取用户输入的姓名，并存储到结构体数组中
@@ -549,10 +545,10 @@ void listContacts(ContactRecord contacts[], int num_contacts)
             printf("\t\t\t地址:%s\n", contacts[i].address);
             printf("\t\t\t邮编:%s\n", contacts[i].postcode);
             printf("\t\t\tEmail:%s\n", contacts[i].email);
-            if (i + 1 < num_contacts)						// 如果不是最后一个学生信息，提示用户按任意键继续
-            {
-                system("pause");					// 将控制台暂停，等待用户按任意键继续
-            }
+            //if (i + 1 < num_contacts)						// 如果不是最后一个学生信息，提示用户按任意键继续
+            //{
+            //    system("pause");					// 将控制台暂停，等待用户按任意键继续
+            //}
         }
         printf("\t\t\t************************************************\n");
     }
@@ -852,9 +848,14 @@ void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
     int a;
     do {
         printf("Enter you choice(0~8):");
-        cin >> a;											// 获取用户输入的字符串，并存储到字符数组s中
+        cin >> a;   // 获取用户输入的字符串，并存储到字符数组s中
+        if (a < 1 || a>8) {
+            cout << "非法指令\n";
+        }
     } while (a < 1 || a>8);
+
     system("cls");
+    if (a == 8) return;
     char key[80];
     printf("\t\t输入查找联系人信息:\n");
     scanf("%s", key);
@@ -1007,14 +1008,26 @@ void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
         printf("\t\t\t邮编:%s\n", contacts[it->second].postcode);
         printf("\t\t\tEmail:%s\n", contacts[it->second].email);
     }
-    char a[] = "";//addGroup把输入和处理合在了一起
-    cout << "1.增加分组\n2.删除分组\n";
+    char a[20] = "";//addGroup把输入和处理合在了一起
+    cout << "1.增加分组\n2.删除分组\n3.按其他键返回主菜单\n";
+    getchar();
     char op;
-    cin >> op;
+    op = getchar();
     if (op == '1')
         addGroup(contacts, num_contacts, a);
-    else if (op == '2')
-        deleteGroup(contacts, num_contacts, a);
+    else if (op == '2') {
+        cout << "请输入你要删除的组名";
+        cin >> a;
+        int m=deleteGroup(contacts, num_contacts, a);
+        if (m == 0) cout << "你想删除的组不存在\n";
+        
+        else {
+            cout << "已移除" << a << "组内共计" << m << "人";
+        }
+        cout << "按任意键返回主菜单\n";
+        getchar();//吞掉之前的换行
+        getchar();//吞掉任意键
+    }   
     else
         return;
 }
@@ -1190,23 +1203,60 @@ void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) 
 
     printf("\n\t\t\t请选择需要编辑的联系人（序号）：\n");
     scanf("%d", &choice);
+
+wohuilaile:  //goto标志 末尾choice重新输入
+
     int index = choice - 1;     //将序号转换为数组索引
+    int flag = -1;//作为while循环推出标记 选6后加加
     if (index >= 0 && index < num_contacts) {
-        printf("\n\t\t\t请编辑该联系人：\n");
-        printf("\t\t\t输入新姓名：");
-        scanf("%s", contacts[index].name);
-        printf("\n\t\t\t输入新电话：");
-        scanf("%s", contacts[index].phone);
-        printf("\n\t\t\t输入新地址：");
-        scanf("%s", contacts[index].address);
-        printf("\n\t\t\t输入新邮编：");
-        scanf("%s", contacts[index].postcode);
-        printf("\n\t\t\t输入新邮箱：");
-        scanf("%s", contacts[index].email);
-        printf("编辑成功！");
+        while (1) {
+                cout << "请输入你想修改的选项1.姓名   2.电话    3.地址    4.邮编    5.邮箱    6.退出\n";
+                int a = -1;
+                cin >> a;
+                switch (a)
+                {
+                case 1:
+                    printf("\t\t\t输入新姓名：");
+                    scanf("%s", contacts[index].name);
+                    break;
+                case 2:
+                    printf("\n\t\t\t输入新电话：");
+                    scanf("%s", contacts[index].phone);
+                    break;
+                case 3:
+                    printf("\n\t\t\t输入新地址：");
+                    scanf("%s", contacts[index].address);
+                    break;
+                case 4:
+                    printf("\n\t\t\t输入新邮编：");
+                    scanf("%s", contacts[index].postcode);
+                    break;
+                case 5:
+                    printf("\n\t\t\t输入新邮箱：");
+                    scanf("%s", contacts[index].email);
+                    break;
+                case 6:
+                    flag++;
+                    break;
+                default:
+                    cout << "请输入正确指令\n";
+                    break;
+                }
+                printf("编辑成功！\n");
+                if (flag == 0) break;
+        }
+        
     }
     else {
-        printf("没有所选的序号，请重新选择。");
-        scanf("%d", &choice);
+        printf("没有所选的序号，请重新选择。1.返回主菜单   2.重新选择\n");
+        char a = '-1';
+        cin >> a;
+        if (a == '1') return;
+        else {
+            cout << "请重新输入序号：";
+            scanf("%d", &choice);
+            goto wohuilaile;//回溯到上次输入之后
+        }
+        
     }
 }
