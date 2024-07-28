@@ -272,11 +272,15 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
 }
 
 /*
+<<<<<<< HEAD
 * * 负责人：桃子
+=======
+>>>>>>> d5c05a6c473577017a91d939563df145b02c9341
 * 按姓名排序
 */
 int sortContactsByName(ContactRecord contacts[], int num_contacts)
 {
+<<<<<<< HEAD
     
     if (num_contacts == 0)  return 0;
     for (int i = 0; i < num_contacts - 1; i++) {
@@ -290,6 +294,26 @@ int sortContactsByName(ContactRecord contacts[], int num_contacts)
     }
     return 0;
 }
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> d5c05a6c473577017a91d939563df145b02c9341
 
 int showLoginInterface() {
     char username[20];
