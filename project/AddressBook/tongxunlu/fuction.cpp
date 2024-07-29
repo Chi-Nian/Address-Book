@@ -291,7 +291,7 @@ int searchContactsByGroup(ContactRecord contacts[], int num_contacts, char* grou
 int searchContactByPostcode(ContactRecord contacts[], int num_contacts, char* postcode) {
     for (int i = 0; i < num_contacts; ++i) {
         if (contacts[i].name[0] == '$') continue;
-        if (contacts[i].postcode == postcode) {
+        if (strcmp(contacts[i].postcode, postcode) == 0) {
             idx.push_back(i);
         }
     }
@@ -315,7 +315,7 @@ searchContactByEmail
 int searchContactByEmail(ContactRecord contacts[], int num_contacts, char* email) {
     for (int i = 0; i < num_contacts; ++i) {
         if (contacts[i].name[0] == '$') continue;
-        if (contacts[i].email == email) {
+        if (strcmp(contacts[i].email, email) == 0) {
             return i;  // 找到联系人，返回联系人索引
         }
     }
@@ -1104,41 +1104,47 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
 // 声明一个名为num的整型变量
 int menuSelect(struct ContactRecord contacts[], int* num_contacts)
 {
-    int select = 0;
+    string select;
     while (true)
     {
         system("cls");
-        showMainInterface();
-        cin >> select;
-        switch (select)
-        {
-        case 1: //增加
-            addContact(contacts, num_contacts);
-            break;
-        case 2: //查找
-            showSearchInterface(contacts, *num_contacts);
-            break;
-        case 3: //修改
-            showEditRecordInterface(contacts, *num_contacts);
-            break;
-        case 4: //删除
-             showDeleteRecordInterface(contacts, num_contacts);
-            break;
-        case 5: //显示
-            listContacts(contacts, *num_contacts);
-                break;
-        case 6: //分组
-            showGroupManagementInterface(contacts, num_contacts);
-            break;
-        case 0: //退出
-            cout << "欢迎下次使用" << endl;
-            system("pause");
-            return 0;
-        default:
+		showMainInterface();
+		cin >> select;
+		if (select.size() > 1) {
             cout << "请输入正确的指令\n";
-            break;
-        }
-
+            system("pause");
+		}
+		else {
+			switch (select[0] - '0')
+			{
+			case 1: //增加
+				addContact(contacts, num_contacts);
+				break;
+			case 2: //查找
+				showSearchInterface(contacts, *num_contacts);
+				break;
+			case 3: //修改
+				showEditRecordInterface(contacts, *num_contacts);
+				break;
+			case 4: //删除
+				showDeleteRecordInterface(contacts, num_contacts);
+				break;
+			case 5: //显示
+				listContacts(contacts, *num_contacts);
+				break;
+			case 6: //分组
+				showGroupManagementInterface(contacts, num_contacts);
+				break;
+			case 0: //退出
+				cout << "欢迎下次使用" << endl;
+				system("pause");
+				return 0;
+			default:
+				cout << "请输入正确的指令\n";
+                system("pause");
+				break;
+			}
+		}
     }
     /*showMainInterface();
     system("pause");*/
@@ -1158,20 +1164,22 @@ int showLoginInterface() {
     char username[20];
     char password[20];
     printf("\n\t\t\t***********登录界面***********\n");
-    printf("\t\t\t用户名：");
-    scanf("%s", username);
-    printf("\t\t\t密码：");
-    scanf("%s", password);
-
-    /*encrypt(password); */ //对输入的密码进行加密处理，方便后面与存储的密码比较
-    if (authenticateUser("user_data.txt", username, password)) {
-        printf("\n\t\t\t登录成功！");
-        return 0;
-    }
-    else {
-        printf("\n\t\t\t用户名或密码有误，请重新输入！");
-        return -1;
-    }
+	while (1) {
+		printf("\t\t\t用户名：");
+		scanf("%s", username);
+		printf("\t\t\t密码：");
+		scanf("%s", password);
+		/*encrypt(password); */ //对输入的密码进行加密处理，方便后面与存储的密码比较
+		if (authenticateUser("user_data.txt", username, password)) {
+			printf("\n\t\t\t登录成功！");
+			return 0;
+		}
+		else {
+			printf("\n\t\t\t用户名或密码有误，请重新输入！");
+            system("pause");
+            system("cls");
+		}
+	}
 }
 
 
