@@ -7,6 +7,7 @@ int main() {
 	int num_contacts=0;
 	int flag = -1;
 	flag=showLoginInterface();
+	//flag = 0;
 	if (flag == 0) {
 		readContacts(contacts,& num_contacts);
 		menuSelect(contacts, &num_contacts);
