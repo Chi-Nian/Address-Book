@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include"head.h"
 #include <conio.h>
-
+#include<map>
 #include <sstream>
 
 #pragma warning(disable : 4996)
@@ -225,6 +225,7 @@ int fuzzySearchContacts( ContactRecord contacts[], int num_contacts,  char* keyw
             strstr(contacts[i].address, keyword) || strstr(contacts[i].postcode, keyword) ||
             strstr(contacts[i].email, keyword)) {
             idx.push_back(i);  // 找到联系人，返回索引
+            return i;
         }
     }
     if(idx.empty()) return -1; 
@@ -257,7 +258,9 @@ int multiConditionSearch( ContactRecord contacts[], int num_contacts,  char* nam
         if (contacts[i].name[0] == '$') continue;
         if (strcmp(contacts[i].address, address) == 0)
         {
+           
             idx.push_back(i);
+            return i;
         }
     }
     if (idx.empty()) return -1;
@@ -293,20 +296,21 @@ int deleteGroup(struct ContactRecord contacts[], int* num_contacts,  char* group
 
 // 2.12 按分组查找联系人
 int searchContactsByGroup(ContactRecord contacts[], int num_contacts, char* group) {
-    for (auto it = mp.begin(); it != mp.end(); it++) {
-        if (contacts[it->second].name[0] == '$') continue;
-        if (strcmp(it->first.c_str(), group) == 0) {
-                    idx.push_back(it->second);
-                }
-    }
+	for (auto it = mp.begin(); it != mp.end(); it++) {
+		if (contacts[it->second].name[0] == '$') continue;
+		if (strcmp(it->first.c_str(), group) == 0) {
+			idx.push_back(it->second);
 
-    if (idx.empty()) {
-        return -1;  // 未找到联系人
-    }
+		}
+	}
 
-    // 打印找到的联系人
+	if (idx.empty()) {
+		return -1;  // 未找到联系人
+	}
 
-    return 0;  // 返回找到的联系人数量
+	// 打印找到的联系人
+
+	return 0;  // 返回找到的联系人数量
 }
 
 // 2.6 按邮编查找联系人
@@ -314,7 +318,9 @@ int searchContactByPostcode(ContactRecord contacts[], int num_contacts, char* po
     for (int i = 0; i < num_contacts; ++i) {
         if (contacts[i].name[0] == '$') continue;
         if (strcmp(contacts[i].postcode, postcode) == 0) {
+
             idx.push_back(i);
+            return i;
         }
     }
     if (idx.empty()) {
@@ -462,66 +468,66 @@ int deleteContact(struct ContactRecord contacts[], int* num_contacts, char* key,
 }
 
 
-//2.16
-
-void erase_tag(char* string) {//删除标签
-    int size = sizeof(string) / sizeof(char);//获取字符串长度
-    int tail = size - 1;
-    while (string[tail] != '(') {
-        tail--;
-    }
-    string[tail] = '\0';
-
-}
-
+////2.16
 //
-int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts, char* contactName, char* tag) {
-    system("cls");
-    printf("\t\t************* 请输入查找方式 ***********\n\n");
-    printf("\t\t\t1.姓名查找\n");
-    printf("\t\t\t2.电话查找\n");
-    printf("\t\t\t3.地址查找\n");
-    printf("\t\t\t4.邮编查找\n");
-    printf("\t\t\t5.邮箱查找\n");
-    printf("\t\t\t6.模糊查找\n");
-    printf("\t\t\t7.分组查找\n");
-    char s[80];
-    int a;
-    do {
-        printf("Enter you choice(0~8):");
-        scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
-        a = atoi(s);
-    } while (a < 1 || a>8);
-    system("cls");
-    char key[80];
-    printf("\t\t输入查找联系人信息:\n");
-    scanf("%s", &key);
-    int res = -1;
-    switch (a) {
-    case 1:
-        res = searchContactByName(contacts, num_contacts, key); break;
-    case 2:
-        res = searchContactByPhone(contacts, num_contacts, key); break;
-    case 3:
-        res = searchContactByAddress(contacts, num_contacts, key); break;
-    case 4:
-        res = searchContactByPostcode(contacts, num_contacts, key); break;
-    case 5:
-        res = searchContactByEmail(contacts, num_contacts, key); break;
-    case 6:
-        res = fuzzySearchContacts(contacts, num_contacts, key); break;
-    case 7:
-        res = searchContactsByGroup(contacts, num_contacts, key); break;
-    }
-    if (res >= 0) {
-        printf("\t\t查找成功\n");
-        erase_tag(contacts[res].name);
-    }
-    else {
-        printf("\t\t查找失败\n");
-    }
-    return 0;
-}
+//void erase_tag(char* string) {//删除标签
+//    int size = sizeof(string) / sizeof(char);//获取字符串长度
+//    int tail = size - 1;
+//    while (string[tail] != '(') {
+//        tail--;
+//    }
+//    string[tail] = '\0';
+//
+//}
+
+////
+//int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts, char* contactName, char* tag) {
+//    system("cls");
+//    printf("\t\t************* 请输入查找方式 ***********\n\n");
+//    printf("\t\t\t1.姓名查找\n");
+//    printf("\t\t\t2.电话查找\n");
+//    printf("\t\t\t3.地址查找\n");
+//    printf("\t\t\t4.邮编查找\n");
+//    printf("\t\t\t5.邮箱查找\n");
+//    printf("\t\t\t6.模糊查找\n");
+//    printf("\t\t\t7.分组查找\n");
+//    char s[80];
+//    int a;
+//    do {
+//        printf("Enter you choice(0~8):");
+//        scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
+//        a = atoi(s);
+//    } while (a < 1 || a>8);
+//    system("cls");
+//    char key[80];
+//    printf("\t\t输入查找联系人信息:\n");
+//    scanf("%s", &key);
+//    int res = -1;
+//    switch (a) {
+//    case 1:
+//        res = searchContactByName(contacts, num_contacts, key); break;
+//    case 2:
+//        res = searchContactByPhone(contacts, num_contacts, key); break;
+//    case 3:
+//        res = searchContactByAddress(contacts, num_contacts, key); break;
+//    case 4:
+//        res = searchContactByPostcode(contacts, num_contacts, key); break;
+//    case 5:
+//        res = searchContactByEmail(contacts, num_contacts, key); break;
+//    case 6:
+//        res = fuzzySearchContacts(contacts, num_contacts, key); break;
+//    case 7:
+//        res = searchContactsByGroup(contacts, num_contacts, key); break;
+//    }
+//    if (res >= 0) {
+//        printf("\t\t查找成功\n");
+//        erase_tag(contacts[res].name);
+//    }
+//    else {
+//        printf("\t\t查找失败\n");
+//    }
+//    return 0;
+//}
 
 
 int addContact(ContactRecord contacts[], int* num_contacts)
@@ -810,77 +816,216 @@ int addGroup(struct ContactRecord contacts[], int* num_contacts, char* group) {
 //    }
 //}
 
+// 2.15 为联系人添加标签
 
+//打印联系人
+void Print(struct ContactRecord contacts[], int i) {
+    cout << "\t\t\t--------------------------" << endl;
+    cout << "Index: " << i << endl;
+    printf("\t\t\t姓名:%s\n", contacts[i].name);
+    printf("\t\t\t电话:%s\n", contacts[i].phone);
+    printf("\t\t\t地址:%s\n", contacts[i].address);
+    printf("\t\t\t邮编:%s\n", contacts[i].postcode);
+    printf("\t\t\tEmail:%s\n", contacts[i].email);
+    cout << "\t\t\t--------------------------" << endl;
+}
 
+#define MAX_INPUT 100
+#define MAX_CONTACTS 100
+#include <cstdio>
+#include <iostream>
+#include <unordered_map>
+#include <string>
+#include <algorithm>
+int searchContactByName1(ContactRecord contacts[], int num_contacts, char* name)
+{
+    // 定义一个整型变量mark，用来标记是否查找到了符合条件的学生信息
+    int i;													// 定义一个整型变量i，用来遍历所有学生信息
+    printf("\t\t\t***************** 按姓名查找 *******************\n");
+    // 定义一个字符数组name，用来存储用户输入的姓名
+     // 获取用户输入的姓名
+    for (i = 0; i < num_contacts; i++)								// 遍历所有学生信息，查找符合条件的学生信息
+    {
+		if (contacts[i].name[0] == '$') {
+			continue;
+		}
+		if (strcmp(contacts[i].name, name) == 0)				// 如果找到了符合条件的学生信息，则输出信息并增加mark的值
+		{
+			return i;
+		}
+	}
+	return -1;
+
+}
+
+unordered_map<char*, char*> mp1;
+int addTagToContact(struct ContactRecord* contact, int num_contacts) {
+	printf("输入联系人姓名：\n");
+    char contactName[100]; // 增加数组大小以容纳更长的姓名
+    scanf("%s", contactName);
+
+    printf("输入联系人标签：\n");
+    char tag[100]; // 增加数组大小以容纳更长的标签
+    scanf("%s", tag);
+
+    int findres = searchContactByName1(contact, num_contacts, contactName);
+    if (findres == -1) {
+        printf("不存在该联系人!\n");
+        return -1;
+    }
+    else {
+        Print(contact, findres);
+        cout << "这是你想找到的联系人吗？" << endl;
+        cout << "y/n" << endl;
+        string judge;
+        cin >> judge;
+        while (judge.size() > 1 || (judge[0] != 'y' && judge[0] != 'n')) {
+            cout << "输入不合法，请重新输入" << endl;
+            cin >> judge;
+        }
+        if (judge[0] == 'n') {
+            return -1;
+        }
+    }
+
+    // 处理标签逻辑
+    char tagWithBrackets[120]; // 增加数组大小以容纳标签和括号
+    snprintf(tagWithBrackets, sizeof(tagWithBrackets), "(%s)", tag);
+    strcat(contact[findres].name, tagWithBrackets); // 将标签添加到联系人名字末尾
+    cout << "成功添加标签" << endl;
+    system("pause");
+    return 0;
+}
+
+//2.16删除联系人标签
+void erase_tag(char* string) {//删除标签
+    int size = sizeof(string) / sizeof(char);//获取字符串长度
+    int tail = size - 1;
+    while (string[tail] != '('&&tail>0) {
+        tail--;
+    }
+    if (string[tail] == '(') {
+        string[tail] = '\0';
+    }	
+}
+//
+int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts) {
+	//show_Contact_with_tag(contacts, num_contacts);
+
+	char* contactName;
+	char* tag;
+	system("cls");
+	printf("\t\t************* 请输入查找方式 ***********\n\n");
+	printf("\t\t\t1.姓名查找\n");
+	printf("\t\t\t2.电话查找\n");
+	printf("\t\t\t3.地址查找\n");
+	printf("\t\t\t4.邮编查找\n");
+	printf("\t\t\t5.邮箱查找\n");
+	printf("\t\t\t6.模糊查找\n");
+    printf("\t\t\t7.退出\n");
+	char s[80];
+	int a;
+	do {
+		printf("Enter you choice(0~8):");
+		scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
+		a = atoi(s);
+	} while (a < 1 || a>8);
+	system("cls");
+	if (a == 7) {
+		return 0;
+	}
+	char key[80];
+	printf("\t\t输入查找联系人信息:\n");
+	scanf("%s", &key);
+	int res = -1;
+	switch (a) {
+	case 1:
+		res = searchContactByName1(contacts, num_contacts, key); break;
+	case 2:
+		res = searchContactByPhone(contacts, num_contacts, key); break;
+	case 3:
+		res = searchContactByAddress(contacts, num_contacts, key); break;
+	case 4:
+		res = searchContactByPostcode(contacts, num_contacts, key); break;
+	case 5:
+		res = searchContactByEmail(contacts, num_contacts, key); break;
+	case 6:
+		res = fuzzySearchContacts(contacts, num_contacts, key); break;
+	case 7:return 0; break;
+	}
+	if (res >= 0) {
+		printf("\t\t查找成功\n");
+		Print(contacts, res);
+        system("pause");
+		erase_tag(contacts[res].name);
+	}
+	else {
+		printf("\t\t查找失败\n");
+	}
+    cout << "是否继续删除联系人标签? y/n" << endl;
+    string flag3;
+    cin >> flag3;
+    while (flag3.size() > 1 || (flag3[0] != 'y' && flag3[0] != 'n')) {
+        cout << "输入错误，请重新输入" << endl;
+        cin >> flag3;
+    }
+    if (flag3[0] == 'y'||flag3[0] == 'Y') {
+        system("cls");
+        deleteTagFromContact(contacts, num_contacts);
+    }
+	return 0;
+}
+
+//显示带有标签的联系人
+
+void show_Contact_with_tag(struct ContactRecord contacts[], int num_contacts) {
+	int flag2 = 1;
+	for (int i = 0; i < num_contacts; i++) {
+		for (int x = 0; contacts[i].name[x] != '\0'; x++) {
+			if (contacts[i].name[x] == '(' || contacts[i].name[x] == ')') {
+				flag2 = 0;
+				Print(contacts, i);
+				break;
+			}
+		}
+
+	}
+	if (flag2) {
+		cout << "没有联系人带有标签" << endl;
+    }
+    system("pause");
+}
 //-------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------View-----------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
 //3.9 显示标签系统界面(拓展)
 void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
-    char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
-    int choice;
+	system("cls");
+	cout << "\t\t1.显示带有标签的联系人" << endl;
+	cout << "\t\t2.为联系人增加标签" << endl;
+	cout << "\t\t3.删除联系人的标签" << endl;
+    cout << "\t\t0.退出" << endl;
+	cout << "\t\t输入选择：" << endl;
+	string chioce;
+	cin >> chioce;
+	while (chioce[0] - '0' < 0 || chioce[0] - '0' > 3 || chioce.size() > 1) {
+		system("cls");
+		cout << "\t\t1.显示带有标签的联系人" << endl;
+		cout << "\t\t2.为联系人增加标签" << endl;
+		cout << "\t\t3.删除联系人的标签" << endl;
+		cout << "\t\t选择有误，请重新选择" << endl;
+		cout << "\t\t输入选择：";
+		cin >> chioce;
+	}
 
-    // 收集所有唯一的标签（姓名首字母）
-    for (int i = 0; i < num_contacts; i++) {
-        char firstLetter = toupper(contacts[i].name[0]);
-        if (firstLetter >= 'A' && firstLetter <= 'Z') {
-            tags[firstLetter - 'A'] = 1;
-        }
-    }
-
-    while (1) {
-        // 显示标签系统界面
-        printf("\n标签系统界面 (按姓名首字母)\n");
-        printf("============================\n");
-        for (int i = 0; i < MAX_TAGS; i++) {
-            if (tags[i]) {
-                printf("%c ", 'A' + i);
-            }
-        }
-        printf("\n============================\n");
-        printf("1. 查看特定标签的联系人\n");
-        printf("2. 返回主菜单\n");
-        printf("请选择操作: ");
-
-        scanf("%d", &choice);
-
-        switch (choice) {
-        case 1: {
-            char tag;
-            printf("请输入要查看的标签（A-Z）: ");
-            scanf(" %c", &tag);
-            tag = toupper(tag);
-
-            if (tag >= 'A' && tag <= 'Z') {
-                printf("\n标签 '%c' 的联系人：\n", tag);
-                int found = 0;
-                for (int i = 0; i < num_contacts; i++) {
-                    if (toupper(contacts[i].name[0]) == tag) {
-                        found = 1;
-                        printf("---------------------------\n");
-                        printf("姓名: %s\n", contacts[i].name);
-                        printf("电话: %s\n", contacts[i].phone);
-                        printf("地址: %s\n", contacts[i].address);
-                        printf("邮编: %s\n", contacts[i].postcode);
-                        printf("邮箱: %s\n", contacts[i].email);
-                        printf("---------------------------\n");
-                    }
-                }
-                if (!found) {
-                    printf("没有找到以 '%c' 开头的联系人。\n", tag);
-                }
-            }
-            else {
-                printf("无效的标签。\n");
-            }
-            break;
-        }
-        case 2:
-            return;
-        default:
-            printf("无效的选择，请重新输入。\n");
-        }
-    }
+	switch (chioce[0] - '0') {
+    case 0: return;
+    case 1:show_Contact_with_tag(contacts, num_contacts); break;
+    case 2:addTagToContact(contacts,  num_contacts); break;
+    case 3:deleteTagFromContact(contacts,  num_contacts); break;
+	}
+    showTagSystemInterface(contacts, num_contacts);
+    
 }
 
 
