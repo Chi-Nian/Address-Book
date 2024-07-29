@@ -3,7 +3,7 @@
 using namespace std;
 
 int main() {
-	cout << "²âÊÔ111111" << endl;
+
 	ContactRecord contacts[MAX_CONTACTS];
 	int num_contacts=0;
 	int flag = -1;

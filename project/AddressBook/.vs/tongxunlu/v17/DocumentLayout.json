@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{46389382-585B-4DEA-86B1-FC92B57F0BEB}|tongxunlu\\tongxunlu.vcxproj|D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\fuction.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{46389382-585B-4DEA-86B1-FC92B57F0BEB}|tongxunlu\\tongxunlu.vcxproj|solutionrelative:tongxunlu\\fuction.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{46389382-585B-4DEA-86B1-FC92B57F0BEB}|tongxunlu\\tongxunlu.vcxproj|D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{46389382-585B-4DEA-86B1-FC92B57F0BEB}|tongxunlu\\tongxunlu.vcxproj|solutionrelative:tongxunlu\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{46389382-585B-4DEA-86B1-FC92B57F0BEB}|tongxunlu\\tongxunlu.vcxproj|D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\head.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{46389382-585B-4DEA-86B1-FC92B57F0BEB}|tongxunlu\\tongxunlu.vcxproj|solutionrelative:tongxunlu\\head.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,17 +22,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "head.h",
+              "DocumentMoniker": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\head.h",
+              "RelativeDocumentMoniker": "tongxunlu\\head.h",
+              "ToolTip": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\head.h",
+              "RelativeToolTip": "tongxunlu\\head.h",
+              "ViewState": "AQIAANcAAAAAAAAAAAAuwOIAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-07-29T03:59:52.057Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "fuction.cpp",
+              "DocumentMoniker": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\fuction.cpp",
+              "RelativeDocumentMoniker": "tongxunlu\\fuction.cpp",
+              "ToolTip": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\fuction.cpp",
+              "RelativeToolTip": "tongxunlu\\fuction.cpp",
+              "ViewState": "AQIAACsDAAAAAAAAAAAAADEDAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-07-29T03:57:22.244Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Main.cpp",
               "DocumentMoniker": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\main.cpp",
               "RelativeDocumentMoniker": "tongxunlu\\main.cpp",
               "ToolTip": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\main.cpp",
               "RelativeToolTip": "tongxunlu\\main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-07-29T03:30:08.509Z",
               "EditorCaption": ""
