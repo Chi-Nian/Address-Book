@@ -1,5 +1,8 @@
-﻿#include<iostream>
+﻿#include<windows.h>
+#include<iostream>
 #include <fstream>
+#include <iomanip>
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include"head.h"
@@ -507,28 +510,6 @@ int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts, char
 }
 
 
-int addContact(ContactRecord contacts[], int* num_contacts)
-{
-    printf("\n\t\t\t**************** 请输入用户信息 ****************\n");
-    printf("\t\t\t输入姓名:");
-    scanf("%s", contacts[*num_contacts].name);									// 获取用户输入的姓名，并存储到结构体数组中
-    printf("\n\t\t\t输入电话号码:");
-    scanf("%s", contacts[*num_contacts].phone);								// 获取用户输入的电话号码，并存储到结构体数组中
-    printf("\n\t\t\t输入地址:");
-    scanf("%s", contacts[*num_contacts].address);								// 获取用户输入的地址，并存储到结构体数组中
-    printf("\n\t\t\t输入邮编:");
-    scanf("%s", contacts[*num_contacts].postcode);								//获取用户输入的邮编，并存储到结构体数组中
-    printf("\n\t\t\t输入e-mail:");
-    scanf("%s", contacts[*num_contacts].email);								// 获取用户输入的电子邮件地址，并存储到结构体数组中
-    (*num_contacts)++;															// 学生信息数量加1
-    printf("\n\t\t\t是否继续添加?(Y/N):");// 提示用户是否继续添加
-    char op;
-    cin >> op;
-    if (op == 'y' || op == 'Y')							// 如果用户输入的是’y’或’Y’，则递归调用adduser函数添加学生信息
-        addContact(contacts, num_contacts);													// 返回0,结束函数
-    return 0;
-}
-
 void listContacts(ContactRecord contacts[], int num_contacts)
 {
     int i;
@@ -798,67 +779,197 @@ int addGroup(struct ContactRecord contacts[], int* num_contacts, char* group) {
 //------------------------------------------------------View-----------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
 
-
-
-void showDeleteRecordInterface(struct ContactRecord contacts[], int *num_contacts) {
-
-    system("cls");
-    printf("\t\t************* 请输入查找方式 ***********\n\n");
-    printf("\t\t\t1.姓名查找\n");
-    printf("\t\t\t2.电话查找\n");
-    printf("\t\t\t3.地址查找\n");
-    printf("\t\t\t4.邮编查找\n");
-    printf("\t\t\t5.邮箱查找\n");
-    printf("\t\t\t6.模糊查找\n");
-    printf("\t\t\t7.分组查找\n");
-    printf("\t\t\t8.退出\n");
-    char s[80];
-    int a;
-    do {
-        printf("Enter you choice(0~8):");
-        scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
-        a = atoi(s);
-        if (a == 8) return;
-    } while (a < 1 || a>8);
-    system("cls");
-    printf("\t\t输入删除联系人信息:\n\n");
-    char key[80];
-    scanf("%s", &key);
-    int res = deleteContact(contacts, num_contacts, key, a);
-    if (res == 0) {
-        printf("\t\t删除成功\n");
-        //(*num_contacts)--;   逻辑删除不能减一 否则将无法便利全部
+// 3.2 显示登录界面
+int showLoginInterface() {
+    system("color F0");
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
     }
-    else printf("\t\t删除失败\n");
-    char op;
-    printf("\t\t是否继续删除?\n");
-    printf("\t\t\ty/n?\n");
-    scanf(" %c", &op);
-    if (op == 'y' || op == 'Y') showDeleteRecordInterface(contacts, num_contacts);
-    else return;
+    cout << "┐";
+    char username[20];
+    char password[20];
+    printf("│\t\t\t\t\t   <*********登录界面**********>                                               │\n");
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘\n";
+    cout << endl;
+    printf("\t\t\t\t用户名：");
+    scanf("%s", username);
+    printf("\n\t\t\t\t密码  ：");
+    scanf("%s", password);
+    cout << "\n";
+
+
+
+    /*encrypt(password); */ //对输入的密码进行加密处理，方便后面与存储的密码比较
+    if (authenticateUser("user_data.txt", username, password)) {
+        printf("\n\t\t\t\t\t\t\t登录成功！\n");
+        int barWidth = 120;
+        int total = 100;
+
+        CONSOLE_SCREEN_BUFFER_INFO csbi;                                        // 保存光标位置
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+
+        for (int i = 0; i <= total; ++i) {
+            float progress = (float)i / total;
+            int pos = barWidth * progress;
+
+            std::string bar;
+            bar.push_back('[');
+            for (int j = 0; j < 112; ++j) {
+                if (j < pos) bar.push_back('=');
+                else if (j == pos) bar.push_back('>');
+                else bar.push_back(' ');
+            }
+            bar += "] " + std::to_string(int(progress * 100.0)) + " %";
+
+            // 移动光标到保存的位置
+            SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), csbi.dwCursorPosition);
+
+            std::cout << bar;
+            std::cout.flush();
+
+            Sleep(30);                 // 稍微减慢速度，使进度条可见
+        }
+
+        std::cout << std::endl;
+        Sleep(2000);
+    }
+    else {
+        printf("\n\t\t\t用户名或密码有误，请重新输入！");
+        return -1;
+    }
 }
 
-void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
+// 主菜单
+void showMainInterface()
+{
+    system("color F0");
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+
+
+    std::cout << "│" << "    づ￣ 3￣)づ                                        当前是主界面                                 	づ￣ 3￣)づ    │" << std::endl;
+    std::cout << "│" << "                                                                                               	               │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★      通讯录管理系统     ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                            │" << std::endl;
+    std::cout << "│" << "    づ￣ 3￣)づ                                                                                      	づ￣ 3￣)づ    │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 1. 增加通讯信息         ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 2. 查找通讯信息         ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 3. 修改通讯信息         ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 4. 删除通讯信息         ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 5. 显示所有记录         ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 6. 联系人分组           ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 7. 联系人排序           ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 8. 添加联系人标签       ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t★ 0. 退出通讯录           ★" << "                                            │" << std::endl;
+    std::cout << "│" << "\t\t\t\t\t\t∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                            │" << std::endl;
+    std::cout << "│" << "    づ￣ 3￣)づ                                                                                      	づ￣ 3￣)づ    │" << std::endl;
+
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘";
+    cout << endl;
+    cout << endl;
+
+    printf("请选择你的功能(0~8):");
+    cout << endl;
+}
+
+// (=ωᆽω=) (^ω^)
+
+// 展示添加界面
+int addContact(ContactRecord contacts[], int* num_contacts)
+{
     system("cls");
-    printf("\t\t************* 请输入查找方式 ***********\n\n");
-    printf("\t\t\t1.姓名查找\n");
-    printf("\t\t\t2.电话查找\n");
-    printf("\t\t\t3.地址查找\n");
-    printf("\t\t\t4.邮编查找\n");
-    printf("\t\t\t5.邮箱查找\n");
-    printf("\t\t\t6.模糊查找\n");
-    printf("\t\t\t7.分组查找\n");
-    printf("\t\t\t8.退出\n");
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+    std::cout << "│" << "b（￣▽￣）d                                       当前是添加联系人功能                                     b（￣▽￣）d│" << std::endl;
+    std::cout << "│" << "                                                                                               	               │" << std::endl;
+    std::cout << "│" << "b（￣▽￣）d                                                                                                b（￣▽￣）d│" << std::endl;
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘";
+    cout << endl;
+    cout << endl;
+    printf("\n\t\t\t                           ★< 请输入用户信息 >★ \n\n");
+    printf("\t\t\t输入姓名:");
+    scanf("%s", contacts[*num_contacts].name);									// 获取用户输入的姓名，并存储到结构体数组中
+    printf("\n\t\t\t输入电话号码:");
+    scanf("%s", contacts[*num_contacts].phone);								// 获取用户输入的电话号码，并存储到结构体数组中
+    printf("\n\t\t\t输入地址:");
+    scanf("%s", contacts[*num_contacts].address);								// 获取用户输入的地址，并存储到结构体数组中
+    printf("\n\t\t\t输入邮编:");
+    scanf("%s", contacts[*num_contacts].postcode);								//获取用户输入的邮编，并存储到结构体数组中
+    printf("\n\t\t\t输入e-mail:");
+    scanf("%s", contacts[*num_contacts].email);								// 获取用户输入的电子邮件地址，并存储到结构体数组中
+    (*num_contacts)++;															// 学生信息数量加1
+    printf("\n\t\t\t是否继续添加?(Y/N):");// 提示用户是否继续添加
+    char op;
+    cin >> op;
+    if (op == 'y' || op == 'Y')							// 如果用户输入的是’y’或’Y’，则递归调用adduser函数添加学生信息
+        addContact(contacts, num_contacts);													// 返回0,结束函数
+
+    cout << "\n\n\n\n                                                                                         添加成功！2.5秒后返回主界面" << endl;
+    Sleep(2500);
+    return 0;
+}
+
+// 展示查找界面
+void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
+    system("color F0");
+    system("cls");
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+    std::cout << "│" << "(￣(工)￣)                                            当前是查找功能                                        (￣(工)￣)│" << std::endl;
+    std::cout << "│" << "                                                                                               	               │" << std::endl;
+    printf("│\t\t\t\t\t\t ◆◆◆◆◆ 请输入查找方式 ◆◆◆◆◆                                            │");
+    std::cout << "│" << "\t\t\t\t\t\t∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                            │" << std::endl;
+    std::cout << "│" << "(￣(工)￣)                                                                                      	     (￣(工)￣)│" << std::endl;
+    printf("│\t\t\t\t\t\t1.姓名查找                                                             │\n");
+    printf("│\t\t\t\t\t\t2.电话查找                                                             │\n");
+    printf("│\t\t\t\t\t\t3.地址查找                                                             │\n");
+    printf("│\t\t\t\t\t\t4.邮编查找                                                             │\n");
+    printf("│\t\t\t\t\t\t5.邮箱查找                                                             │\n");
+    printf("│\t\t\t\t\t\t6.模糊查找                                                             │\n");
+    printf("│\t\t\t\t\t\t7.分组查找                                                             │\n");
+    printf("│\t\t\t\t\t\t8.退出                                                                 │\n");
+    std::cout << "│" << "\t\t\t\t\t       ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞   " << "                                         │" << std::endl;
+    std::cout << "│" << "(￣(工)￣)                                                                                      	     (￣(工)￣)│" << std::endl;
+
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘";
+
+
     int a;
     do {
-        printf("Enter you choice(0~8):");
+        printf("请选择您的查找方式(0~8):");
         cin >> a;											// 获取用户输入的字符串，并存储到字符数组s中
     } while (a < 1 || a>8);
     system("cls");
     char key[80];
     printf("\t\t输入查找联系人信息:\n");
     scanf("%s", key);
-    
+
     int res = -1;
     int flag = -1;
     switch (a) {
@@ -918,10 +1029,10 @@ void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
             printf("\t\t\t地址: %s\n", contacts[res].address);
             printf("\t\t\te-mail:%s\n", contacts[res].email);
             printf("\t\t\t************************************************\n");
-            
+
         }
     }
-    if(res==-1) printf("\t\t查找失败\n");
+    if (res == -1) printf("\t\t查找失败\n");
     printf("\t\t是否继续进行查找?\ny/n\n");
     char op;
     scanf(" %c", &op);
@@ -929,20 +1040,76 @@ void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
     else return;
 }
 
-void showMainInterface()
-{
-    cout << "***************************" << endl;
-    cout << "***** 1，增加通讯信息 *****" << endl;
-    cout << "***** 2，查找通讯信息 *****" << endl;
-    cout << "***** 3，修改通讯信息 *****" << endl;
-    cout << "***** 4，删除通讯信息 *****" << endl;
-    cout << "***** 5，显示所有记录 *****" << endl;
-    cout << "****** 6，联系人分组 ******" << endl;
-    cout << "****** 0，退出通讯录 ******" << endl;
-    cout << "***************************" << endl;
+// 展示编辑联系人界面
+void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) {
+    system("color F0");
+    system("cls");
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+    std::cout << "│" << "b（￣▽￣）d                                          当前是编辑功能                                        b（￣▽￣）d│" << std::endl;
+    std::cout << "│" << "                                                                                               	               │" << std::endl;
+
+    printf("│\t\t\t\t\t\t    当前联系人总数： %d                                                 │\n", num_contacts);
+    std::cout << "│" << "\t\t\t\t\t\t  ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                              │" << std::endl;
+    std::cout << "│" << "b（￣▽￣）d                                                                                                b（￣▽￣）d│" << std::endl;
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘";
+    cout << endl;
+    cout << endl;
+
+    printf("                                                  ★< 以下是所有联系人 >★\n");
+
+
+    int choice = 0;                 //联系人的序号
+    for (int i = 0; i < num_contacts; i++) {
+        if (contacts[i].name[0] == '$') {
+            continue;
+
+        }
+        else {
+            printf("%d.姓名：%s\t电话：%s\n  地址：%s\t邮编：%s\t邮箱：%s\n", i + 1, contacts[i].name,
+                contacts[i].phone, contacts[i].address, contacts[i].postcode, contacts[i].email);
+        }
+        cout << endl;
+
+    }
+
+    cout << endl;
+    cout << endl;
+    printf("\n\t\t\t请选择需要编辑的联系人（序号）：\n");
+    scanf("%d", &choice);
+    int index = choice - 1;     //将序号转换为数组索引
+    if (index >= 0 && index < num_contacts) {
+        printf("\n\t\t\t请编辑该联系人：\n");
+        printf("\t\t\t输入新姓名：");
+        scanf("%s", contacts[index].name);
+        printf("\n\t\t\t输入新电话：");
+        scanf("%s", contacts[index].phone);
+        printf("\n\t\t\t输入新地址：");
+        scanf("%s", contacts[index].address);
+        printf("\n\t\t\t输入新邮编：");
+        scanf("%s", contacts[index].postcode);
+        printf("\n\t\t\t输入新邮箱：");
+        scanf("%s", contacts[index].email);
+        printf("编辑成功！");
+    }
+    else {
+        printf("没有所选的序号，请重新选择。");
+        scanf("%d", &choice);
+    }
 }
 
+// 展示插入界面
 void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contacts) {
+    system("color F0");
+    system("cls");
+
     if (*num_contacts >= MAX_CONTACTS) {
         printf("联系人列表已满，无法添加新联系人。\n");
         return;
@@ -991,8 +1158,90 @@ void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contact
     }
 }
 
+// 展示删除界面
+void showDeleteRecordInterface(struct ContactRecord contacts[], int *num_contacts) {
+    system("color F0");
+    system("cls");
+
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+
+    printf("│(￣﹁￣)                                           当前是删除记录功能                                         (￣﹁￣)│");
+    printf("│                                                                                                                      │");
+    printf("│\t\t\t\t\t        ◆◆◆◆◆ 请输入删除方式  ◆◆◆◆◆                                            │");
+    std::cout << "│" << "\t\t\t\t\t\t∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                            │" << std::endl;
+    printf("│(￣﹁￣)                                                                                                      (￣﹁￣)│");
+    printf("│\t\t\t\t\t\t1.按姓名删除                                                           │\n");
+    printf("│\t\t\t\t\t\t2.按电话删除                                                           │\n");
+    printf("│\t\t\t\t\t\t3.按地址删除                                                           │\n");
+    printf("│\t\t\t\t\t\t4.按邮编删除                                                           │\n");
+    printf("│\t\t\t\t\t\t5.按邮箱删除                                                           │\n");
+    printf("│\t\t\t\t\t\t6.模糊删除                                                             │\n");
+    printf("│\t\t\t\t\t\t7.分组删除                                                             │\n");
+    printf("│\t\t\t\t\t\t8.退出                                                                 │\n");
+    std::cout << "│" << "\t\t\t\t\t       ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                            │" << std::endl;
+    printf("│(￣﹁￣)                                                                                                      (￣﹁￣)│");
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘";
+
+    cout << endl;
+    cout << endl;
+    char s[80];
+    int a;
+    do {
+        printf("请选择你的删除方式(0~8):");
+        scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
+        a = atoi(s);
+        if (a == 8) return;
+    } while (a < 1 || a>8);
+    system("cls");
+    printf("\t\t输入删除联系人信息:\n\n");
+    char key[80];
+    scanf("%s", &key);
+    int res = deleteContact(contacts, num_contacts, key, a);
+    if (res == 0) {
+        printf("\t\t删除成功\n");
+        //(*num_contacts)--;   逻辑删除不能减一 否则将无法便利全部
+    }
+    else printf("\t\t删除失败\n");
+    char op;
+    printf("\t\t是否继续删除?\n");
+    printf("\t\t\ty/n?\n");
+    scanf(" %c", &op);
+    if (op == 'y' || op == 'Y') showDeleteRecordInterface(contacts, num_contacts);
+    else return;
+}
+
+// 展示分组界面
 void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
 {
+    system("color F0");
+    system("cls");
+    cout << "┌─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+    std::cout << "│" << "b（￣▽￣）d                                          当前是分组功能                                        b（￣▽￣）d│" << std::endl;
+    std::cout << "│" << "                                                                                               	               │" << std::endl;
+
+    printf("│\t\t\t\t\t\t     当前分组总数： %d                                                  │\n", mp.size());
+    std::cout << "│" << "\t\t\t\t\t\t  ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞" << "                                              │" << std::endl;
+    std::cout << "│" << "b（￣▽￣）d                                                                                                b（￣▽￣）d│" << std::endl;
+    cout << "└─";
+    for (int i = 0; i < 117; i++) {
+        cout << "─";
+    }
+    cout << "┘";
+    cout << endl;
+    cout << endl;
+
     char* tmp = NULL;
     for (auto it = mp.begin(); it != mp.end(); it++) {
         if (contacts[it->second].name[0] == '$') {
@@ -1011,15 +1260,50 @@ void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
     cout << "1.增加分组\n2.删除分组\n";
     char op;
     cin >> op;
-    if (op == '1')
+    if (op == '1') {
+        system("cls");
+        cout << "┌─";
+        for (int i = 0; i < 117; i++) {
+            cout << "─";
+        }
+        cout << "┐" << endl;
+        std::cout << "│" << "b（￣▽￣）d                                          当前是分组功能                                        b（￣▽￣）d│" << std::endl;
+        std::cout << "│" << "                                                                                               	               │" << std::endl;
+        std::cout << "│" << "b（￣▽￣）d                                                                                                b（￣▽￣）d│" << std::endl;
+        cout << "└─";
+        for (int i = 0; i < 117; i++) {
+            cout << "─";
+        }
+        cout << "┘";
+        cout << endl;
+        cout << endl;
         addGroup(contacts, num_contacts, a);
-    else if (op == '2')
+    }
+        
+    else if (op == '2') {
+        system("cls");
+        cout << "┌─";
+        for (int i = 0; i < 117; i++) {
+            cout << "─";
+        }
+        cout << "┐" << endl;
+        std::cout << "│" << "b（￣▽￣）d                                          当前是分组功能                                        b（￣▽￣）d│" << std::endl;
+        std::cout << "│" << "                                                                                               	               │" << std::endl;
+        std::cout << "│" << "b（￣▽￣）d                                                                                                b（￣▽￣）d│" << std::endl;
+        cout << "└─";
+        for (int i = 0; i < 117; i++) {
+            cout << "─";
+        }
+        cout << "┘";
+        cout << endl;
+        cout << endl;
         deleteGroup(contacts, num_contacts, a);
+    }       
     else
         return;
 }
 
-//3.9 显示标签系统界面(拓展)
+// 展示标签系统界面(拓展)
 void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
     int choice;
@@ -1088,7 +1372,7 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
 }
 
 
-// 声明一个名为num的整型变量
+// 菜单展示函数
 int menuSelect(struct ContactRecord contacts[], int* num_contacts)
 {
     int select = 0;
@@ -1109,11 +1393,11 @@ int menuSelect(struct ContactRecord contacts[], int* num_contacts)
             showEditRecordInterface(contacts, *num_contacts);
             break;
         case 4: //删除
-             showDeleteRecordInterface(contacts, num_contacts);
+            showDeleteRecordInterface(contacts, num_contacts);
             break;
         case 5: //显示
             listContacts(contacts, *num_contacts);
-                break;
+            break;
         case 6: //分组
             showGroupManagementInterface(contacts, num_contacts);
             break;
@@ -1130,83 +1414,4 @@ int menuSelect(struct ContactRecord contacts[], int* num_contacts)
     /*showMainInterface();
     system("pause");*/
     return 0;
-}
-
-// 3.2 显示登录界面
-/*
-负责人:
-功能: 显示登录界面，并获取用户输入的用户名和密码。
-参数: void
-返回值:
-    0: 登录成功
-    -1: 登录失败
-*/
-int showLoginInterface() {
-    char username[20];
-    char password[20];
-    printf("\n\t\t\t***********登录界面***********\n");
-    printf("\t\t\t用户名：");
-    scanf("%s", username);
-    printf("\t\t\t密码：");
-    scanf("%s", password);
-
-    /*encrypt(password); */ //对输入的密码进行加密处理，方便后面与存储的密码比较
-    if (authenticateUser("user_data.txt", username, password)) {
-        printf("\n\t\t\t登录成功！");
-        return 0;
-    }
-    else {
-        printf("\n\t\t\t用户名或密码有误，请重新输入！");
-        return -1;
-    }
-}
-
-
-
-// 3.4 显示编辑记录界面
-/*
-负责人:
-功能: 显示编辑记录界面，允许用户选择要编辑的联系人，并输入新的联系信息。
-参数:
-contacts: 存放联系人的数组。
-num_contacts: 数组中联系人的数量。
-返回值: void
-*/
-void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) {
-    int choice=0;                 //联系人的序号
-    
-    printf("联系人总数：%d\n", num_contacts);
-    for (int i = 0; i < num_contacts; i++) {
-        if (contacts[i].name[0] == '$') {
-            continue;
-            
-        }
-        else {
-            printf("%d.姓名：%s，电话：%s，地址：%s，邮编：%s，邮箱：%s\n", i + 1, contacts[i].name,
-            contacts[i].phone, contacts[i].address, contacts[i].postcode, contacts[i].email);
-        }
-       
-    }
-
-    printf("\n\t\t\t请选择需要编辑的联系人（序号）：\n");
-    scanf("%d", &choice);
-    int index = choice - 1;     //将序号转换为数组索引
-    if (index >= 0 && index < num_contacts) {
-        printf("\n\t\t\t请编辑该联系人：\n");
-        printf("\t\t\t输入新姓名：");
-        scanf("%s", contacts[index].name);
-        printf("\n\t\t\t输入新电话：");
-        scanf("%s", contacts[index].phone);
-        printf("\n\t\t\t输入新地址：");
-        scanf("%s", contacts[index].address);
-        printf("\n\t\t\t输入新邮编：");
-        scanf("%s", contacts[index].postcode);
-        printf("\n\t\t\t输入新邮箱：");
-        scanf("%s", contacts[index].email);
-        printf("编辑成功！");
-    }
-    else {
-        printf("没有所选的序号，请重新选择。");
-        scanf("%d", &choice);
-    }
 }
