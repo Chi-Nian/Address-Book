@@ -1313,7 +1313,7 @@ void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) 
 wohuilaile:  //goto标志 末尾choice重新输入
 
     int index = choice - 1;     //将序号转换为数组索引
-    int flag = -1;//作为while循环推出标记 选6后加加
+    int flag = -1;//作为while循环推出标记 选case:6后flag++
     if (index >= 0 && index < num_contacts) {
         while (1) {
                 cout << "请输入你想修改的选项1.姓名   2.电话    3.地址    4.邮编    5.邮箱    6.退出\n";
