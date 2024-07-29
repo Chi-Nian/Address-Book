@@ -573,6 +573,7 @@ void listContacts(ContactRecord contacts[], int num_contacts)
             printf("\t\t\t地址:%s\n", contacts[i].address);
             printf("\t\t\t邮编:%s\n", contacts[i].postcode);
             printf("\t\t\tEmail:%s\n", contacts[i].email);
+            cout << endl << endl;
             //if (i + 1 < num_contacts)						// 如果不是最后一个学生信息，提示用户按任意键继续
             //{
             //    system("pause");					// 将控制台暂停，等待用户按任意键继续
