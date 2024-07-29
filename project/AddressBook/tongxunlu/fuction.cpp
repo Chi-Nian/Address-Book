@@ -1069,34 +1069,40 @@ void showDeleteRecordInterface(struct ContactRecord contacts[], int *num_contact
 }
 
 void showSearchInterface(struct ContactRecord contacts[], int num_contacts) {
-    system("cls");
-    printf("\t\t************* 请输入查找方式 ***********\n\n");
-    printf("\t\t\t1.姓名查找\n");
-    printf("\t\t\t2.电话查找\n");
-    printf("\t\t\t3.地址查找\n");
-    printf("\t\t\t4.邮编查找\n");
-    printf("\t\t\t5.邮箱查找\n");
-    printf("\t\t\t6.模糊查找\n");
-    printf("\t\t\t7.分组查找\n");
-    printf("\t\t\t8.退出\n");
-    int a;
-    do {
-        printf("Enter you choice(0~8):");
-        cin >> a;   // 获取用户输入的字符串，并存储到字符数组s中
-        if (a < 1 || a>8) {
-            cout << "非法指令\n";
-        }
-    } while (a < 1 || a>8);
 
-    system("cls");
-    if (a == 8) return;
+
+	string a;
+	while (a.size() > 1 || a.empty() || (a[0] - '0' < 1 || a[0] - '0' > 8)) {
+
+		system("cls");
+		printf("\t\t************* 请输入查找方式 ***********\n\n");
+		printf("\t\t\t1.姓名查找\n");
+		printf("\t\t\t2.电话查找\n");
+		printf("\t\t\t3.地址查找\n");
+		printf("\t\t\t4.邮编查找\n");
+		printf("\t\t\t5.邮箱查找\n");
+		printf("\t\t\t6.模糊查找\n");
+		printf("\t\t\t7.分组查找\n");
+		printf("\t\t\t8.退出\n");
+        if (!a.empty()) {
+            cout << "输入有误" << endl;
+        }
+		printf("Enter you choice(0~8):");
+		cin >> a;   // 获取用户输入的字符串，并存储到字符数组s中
+
+	}
+
+
+
+	system("cls");
+    if (a[0] - '0' == 8) return;
     char key[80];
     printf("\t\t输入查找联系人信息:\n");
     scanf("%s", key);
     
     int res = -1;
     int flag = -1;
-    switch (a) {
+    switch (a[0] - '0') {
     case 1:
         res = searchContactByName(contacts, num_contacts, key);
         flag++;
