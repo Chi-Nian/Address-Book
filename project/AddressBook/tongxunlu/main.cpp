@@ -3,6 +3,7 @@
 using namespace std;
 
 int main() {
+
 	ContactRecord contacts[MAX_CONTACTS];
 	int num_contacts=0;
 	int flag = -1;

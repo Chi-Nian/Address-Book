@@ -165,20 +165,20 @@ bool authenticateUser(const char* filename, const char* username, const char* pa
     结果为 1（真），然后再比较 1 < 6+1，这总是为真
 */
 
-int sortContactsByName(ContactRecord contacts[], int num_contacts)
-{
-    if (num_contacts == 0)  return 0;
-    for (int i = 0; i < num_contacts - 1; i++) {
-        for (int j = i + 1; j < num_contacts; j++) {
-            if (strcmp(contacts[i].name, contacts[j].name) > 0) {
-                ContactRecord temp = contacts[i];
-                contacts[i] = contacts[j];
-                contacts[j] = temp;
-            }
-        }
-    }
-    return 0;
-}
+//int sortContactsByName(ContactRecord contacts[], int num_contacts)
+//{
+//    if (num_contacts == 0)  return 0;
+//    for (int i = 0; i < num_contacts - 1; i++) {
+//        for (int j = i + 1; j < num_contacts; j++) {
+//            if (strcmp(contacts[i].name, contacts[j].name) > 0) {
+//                ContactRecord temp = contacts[i];
+//                contacts[i] = contacts[j];
+//                contacts[j] = temp;
+//            }
+//        }
+//    }
+//    return 0;
+//}
 
 void encrypt(char* pwd)					//这是一个名为encrypt的函数，用于对传入的字符串进行简单的加密处理
 {
@@ -193,7 +193,29 @@ void encrypt(char* pwd)					//这是一个名为encrypt的函数，用于对传�
 //-------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------Service------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
- 
+ //2.9 按姓名排序联系人信息(已有)
+int sortContactsByName(struct ContactRecord contacts[], int num_contacts) {
+    int i, j;
+    struct ContactRecord tmp;
+    for (i = 1; i < num_contacts; i++)												// 冒泡排序算法，按照姓名升序排序
+    {
+        if (strcmp(contacts[i].name, contacts[i - 1].name) < 0)				// 对于每个i，判断当前学生姓名是否比前一个学生姓名小，即判断是否需要交换其位置
+        {
+            tmp = contacts[i];												// 将当前学生信息保存到tmp中
+            j = i - 1;														// 设置一个指针j指向前一个学生
+            do																// 执行do-while循环，将指针j所指向的学生移到j+1的位置
+            {
+                contacts[j + 1] = contacts[j];								// 将指针j所指向的学生移到j+1的位置
+                j--;														// 将j指针向前移动一个位置
+            } while ((strcmp(tmp.name, contacts[j].name) < 0 && j >= 0));	// 直到遇到一个学生姓名比tmp的姓名小或j已经到了第一个学生为止
+            contacts[j + 1] = tmp;											// 将tmp插入到指针j所指向的学生之后的位置，排序完成
+        }
+    }
+    // 如果用户选择显示排序结果，则调用 list() 函数，输出通讯录中所有学生的记录
+    listContacts(contacts, num_contacts);
+    return(0);																// 返回0，表示排序完成
+
+}
 
 // 服务层：模糊搜索联系人
 int fuzzySearchContacts( ContactRecord contacts[], int num_contacts,  char* keyword) {
@@ -291,7 +313,7 @@ int searchContactsByGroup(ContactRecord contacts[], int num_contacts, char* grou
 int searchContactByPostcode(ContactRecord contacts[], int num_contacts, char* postcode) {
     for (int i = 0; i < num_contacts; ++i) {
         if (contacts[i].name[0] == '$') continue;
-        if (contacts[i].postcode == postcode) {
+        if (strcmp(contacts[i].postcode, postcode) == 0) {
             idx.push_back(i);
         }
     }
@@ -315,7 +337,7 @@ searchContactByEmail
 int searchContactByEmail(ContactRecord contacts[], int num_contacts, char* email) {
     for (int i = 0; i < num_contacts; ++i) {
         if (contacts[i].name[0] == '$') continue;
-        if (contacts[i].email == email) {
+        if (strcmp(contacts[i].email, email) == 0) {
             return i;  // 找到联系人，返回联系人索引
         }
     }
@@ -793,7 +815,73 @@ int addGroup(struct ContactRecord contacts[], int* num_contacts, char* group) {
 //-------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------View-----------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
+//3.9 显示标签系统界面(拓展)
+void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
+    char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
+    int choice;
 
+    // 收集所有唯一的标签（姓名首字母）
+    for (int i = 0; i < num_contacts; i++) {
+        char firstLetter = toupper(contacts[i].name[0]);
+        if (firstLetter >= 'A' && firstLetter <= 'Z') {
+            tags[firstLetter - 'A'] = 1;
+        }
+    }
+
+    while (1) {
+        // 显示标签系统界面
+        printf("\n标签系统界面 (按姓名首字母)\n");
+        printf("============================\n");
+        for (int i = 0; i < MAX_TAGS; i++) {
+            if (tags[i]) {
+                printf("%c ", 'A' + i);
+            }
+        }
+        printf("\n============================\n");
+        printf("1. 查看特定标签的联系人\n");
+        printf("2. 返回主菜单\n");
+        printf("请选择操作: ");
+
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1: {
+            char tag;
+            printf("请输入要查看的标签（A-Z）: ");
+            scanf(" %c", &tag);
+            tag = toupper(tag);
+
+            if (tag >= 'A' && tag <= 'Z') {
+                printf("\n标签 '%c' 的联系人：\n", tag);
+                int found = 0;
+                for (int i = 0; i < num_contacts; i++) {
+                    if (toupper(contacts[i].name[0]) == tag) {
+                        found = 1;
+                        printf("---------------------------\n");
+                        printf("姓名: %s\n", contacts[i].name);
+                        printf("电话: %s\n", contacts[i].phone);
+                        printf("地址: %s\n", contacts[i].address);
+                        printf("邮编: %s\n", contacts[i].postcode);
+                        printf("邮箱: %s\n", contacts[i].email);
+                        printf("---------------------------\n");
+                    }
+                }
+                if (!found) {
+                    printf("没有找到以 '%c' 开头的联系人。\n", tag);
+                }
+            }
+            else {
+                printf("无效的标签。\n");
+            }
+            break;
+        }
+        case 2:
+            return;
+        default:
+            printf("无效的选择，请重新输入。\n");
+        }
+    }
+}
 
 
 void showDeleteRecordInterface(struct ContactRecord contacts[], int *num_contacts) {
@@ -939,6 +1027,8 @@ void showMainInterface()
     cout << "***** 4，删除通讯信息 *****" << endl;
     cout << "***** 5，显示所有记录 *****" << endl;
     cout << "****** 6，联系人分组 ******" << endl;
+    cout << "****** 7，排序联系人 ******" << endl;
+    cout << "****** 8，标签系统 ******" << endl;
     cout << "****** 0，退出通讯录 ******" << endl;
     cout << "***************************" << endl;
 }
@@ -1033,6 +1123,7 @@ void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
 }
 
 //3.9 显示标签系统界面(拓展)
+/*
 void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
     char tags[MAX_TAGS] = { 0 };  // 用于记录每个字母是否出现
     int choice;
@@ -1099,46 +1190,59 @@ void showTagSystemInterface(struct ContactRecord contacts[], int num_contacts) {
         }
     }
 }
-
+*/
 
 // 声明一个名为num的整型变量
 int menuSelect(struct ContactRecord contacts[], int* num_contacts)
 {
-    int select = 0;
+    string select;
     while (true)
     {
         system("cls");
-        showMainInterface();
-        cin >> select;
-        switch (select)
-        {
-        case 1: //增加
-            addContact(contacts, num_contacts);
-            break;
-        case 2: //查找
-            showSearchInterface(contacts, *num_contacts);
-            break;
-        case 3: //修改
-            showEditRecordInterface(contacts, *num_contacts);
-            break;
-        case 4: //删除
-             showDeleteRecordInterface(contacts, num_contacts);
-            break;
-        case 5: //显示
-            listContacts(contacts, *num_contacts);
-                break;
-        case 6: //分组
-            showGroupManagementInterface(contacts, num_contacts);
-            break;
-        case 0: //退出
-            cout << "欢迎下次使用" << endl;
-            system("pause");
-            return 0;
-        default:
+		showMainInterface();
+		cin >> select;
+		if (select.size() > 1) {
             cout << "请输入正确的指令\n";
-            break;
-        }
+            system("pause");
+		}
+		else {
+			switch (select[0] - '0')
+			{
+			case 1: //增加
+				addContact(contacts, num_contacts);
+				break;
+			case 2: //查找
+				showSearchInterface(contacts, *num_contacts);
+				break;
+			case 3: //修改
+				showEditRecordInterface(contacts, *num_contacts);
+				break;
+			case 4: //删除
+				showDeleteRecordInterface(contacts, num_contacts);
+				break;
+			case 5: //显示
+				listContacts(contacts, *num_contacts);
+				break;
+			case 6: //分组
+				showGroupManagementInterface(contacts, num_contacts);
+				break;
 
+            case 7: //联系人排序
+                sortContactsByName(contacts,*num_contacts);
+                break;
+            case 8: //标签系统
+                showTagSystemInterface(contacts, *num_contacts);
+                break;
+			case 0: //退出
+				cout << "欢迎下次使用" << endl;
+				system("pause");
+				return 0;
+			default:
+				cout << "请输入正确的指令\n";
+                system("pause");
+				break;
+			}
+		}
     }
     /*showMainInterface();
     system("pause");*/
@@ -1158,20 +1262,22 @@ int showLoginInterface() {
     char username[20];
     char password[20];
     printf("\n\t\t\t***********登录界面***********\n");
-    printf("\t\t\t用户名：");
-    scanf("%s", username);
-    printf("\t\t\t密码：");
-    scanf("%s", password);
-
-    /*encrypt(password); */ //对输入的密码进行加密处理，方便后面与存储的密码比较
-    if (authenticateUser("user_data.txt", username, password)) {
-        printf("\n\t\t\t登录成功！");
-        return 0;
-    }
-    else {
-        printf("\n\t\t\t用户名或密码有误，请重新输入！");
-        return -1;
-    }
+	while (1) {
+		printf("\t\t\t用户名：");
+		scanf("%s", username);
+		printf("\t\t\t密码：");
+		scanf("%s", password);
+		/*encrypt(password); */ //对输入的密码进行加密处理，方便后面与存储的密码比较
+		if (authenticateUser("user_data.txt", username, password)) {
+			printf("\n\t\t\t登录成功！");
+			return 0;
+		}
+		else {
+			printf("\n\t\t\t用户名或密码有误，请重新输入！");
+            system("pause");
+            system("cls");
+		}
+	}
 }
 
 
