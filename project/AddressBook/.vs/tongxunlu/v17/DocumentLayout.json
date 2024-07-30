@@ -35,8 +35,7 @@
               "ViewState": "AQIAAO0AAAAAAAAAAAArwAEBAAAXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-07-29T03:59:52.057Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -50,7 +49,7 @@
               "RelativeDocumentMoniker": "tongxunlu\\fuction.cpp",
               "ToolTip": "D:\\Git Hub Clone\\Address-Book\\project\\AddressBook\\tongxunlu\\fuction.cpp",
               "RelativeToolTip": "tongxunlu\\fuction.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACEAAAAgAAAA",
+              "ViewState": "AQIAAGsGAAAAAAAAAAArwHkGAAARAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-07-29T03:57:22.244Z",
               "EditorCaption": ""
@@ -65,8 +64,7 @@
               "RelativeToolTip": "tongxunlu\\main.cpp",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-07-29T03:30:08.509Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-29T03:30:08.509Z"
             }
           ]
         }
