@@ -43,33 +43,70 @@ int readContacts(struct ContactRecord contacts[], int* num_contacts)
     // 关闭文件
     inputFile.close();
 
-    FILE* fp = fopen("contacts.txt", "rb");             // 以二进制只读方式打开
-    if (fp == NULL) {
-        perror("打开文件失败");
-        return -1;
+    ifstream inputFile2("contacts.txt");
+    *num_contacts = 0;
+
+    // 检查文件是否打开成功
+    if (!inputFile2.is_open()) {
+        cerr << "Failed to open file." << endl;
+        return 1;
+    }
+    string line2;
+    string name;
+    string phone;
+    string address;
+    string postcode;
+    string email;
+    while (getline(inputFile2, line2)) {
+        istringstream iss(line2);
+        
+        if (getline(iss, name, ',')&&
+            getline(iss, phone, ',')&&
+            getline(iss, address, ',')&&
+            getline(iss, postcode, ',')&&
+            getline(iss, email)) {
+            strcpy(contacts[*num_contacts].name, name.c_str());
+            strcpy(contacts[*num_contacts].phone, phone.c_str());
+            strcpy(contacts[*num_contacts].address, address.c_str());
+            strcpy(contacts[*num_contacts].postcode, postcode.c_str());
+            strcpy(contacts[*num_contacts].email, email.c_str());
+            (*num_contacts)++;
+        }
     }
 
-    *num_contacts = 0;                                  // 初始化联系人数量为0
+    // 关闭文件
+    inputFile2.close();
 
-    struct ContactRecord tmp;
+    return 0;
 
-    //%20s的逻辑是 读取的时候一直读 直到遇见空格/换行/或者读满20个
-    while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //这里的格式化读取有问题，要按照指定的格式来读取，才能读取到
-        tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
-    {
-        contacts[*num_contacts] = tmp;
-        (*num_contacts)++;
 
-        // 打印
-        /*printf("联系人: %d\n", *num_contacts);
-        printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
-            tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
-        printf("-----------------------------------------------------------\n");*/
-        if (*num_contacts >= MAX_CONTACTS) break;        //限制最大联系人数量
-    }
+    //FILE* fp = fopen("contacts.txt", "rb");             // 以二进制只读方式打开
+    //if (fp == NULL) {
+    //    perror("打开文件失败");
+    //    return -1;
+    //}
 
-    fclose(fp);  // 关闭文件
-    fp = NULL;
+    //*num_contacts = 0;                                  // 初始化联系人数量为0
+
+    //struct ContactRecord tmp;
+
+    ////%20s的逻辑是 读取的时候一直读 直到遇见空格/换行/或者读满20个
+    //while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //这里的格式化读取有问题，要按照指定的格式来读取，才能读取到
+    //    tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
+    //{
+    //    contacts[*num_contacts] = tmp;
+    //    (*num_contacts)++;
+
+    //    // 打印
+    //    /*printf("联系人: %d\n", *num_contacts);
+    //    printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
+    //        tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
+    //    printf("-----------------------------------------------------------\n");*/
+    //    if (*num_contacts >= MAX_CONTACTS) break;        //限制最大联系人数量
+    //}
+
+    //fclose(fp);  // 关闭文件
+    //fp = NULL;
 
 
     return 0;
@@ -106,9 +143,9 @@ int writeContacts(struct ContactRecord contacts[], int num_contacts) {
             continue;
         }
         string Person;
-        Person += contacts[i].name, Person += ' ';
-        Person += contacts[i].phone, Person += ' ', Person += contacts[i].address, Person += ' ';
-        Person += contacts[i].postcode, Person += ' ', Person += contacts[i].email;
+        Person += contacts[i].name, Person += ',';
+        Person += contacts[i].phone, Person += ',', Person += contacts[i].address, Person += ',';
+        Person += contacts[i].postcode, Person += ',', Person += contacts[i].email;
         if (Person == "") {
             return -1;
         }
@@ -540,11 +577,12 @@ int addContact(ContactRecord contacts[], int* num_contacts)
     printf("\n\t\t\t输入电话号码:");
     scanf("%s", contacts[*num_contacts].phone);// 获取用户输入的电话号码，并存储到结构体数组中
     cout << "你想继续添加地址，邮编，Email吗？(Y/N):\n";
-    char tmp;
-    cin >> tmp;
-    if (tmp == 'y' || tmp == 'Y') {
+    char op;
+    cin >> op;
+    if (op == 'y' || op == 'Y') {
         string str;
         printf("\n\t\t\t输入地址:");
+        getchar();// 防止输入回车
         getline(cin,str,'\n');	// 获取用户输入的地址，并存储到结构体数组中
         strcpy(contacts[*num_contacts].address, str.c_str());
         printf("\n\t\t\t输入邮编:");
@@ -553,9 +591,13 @@ int addContact(ContactRecord contacts[], int* num_contacts)
         printf("\n\t\t\t输入e-mail:");
         getline(cin,str,'\n');								//获取用户输入的邮箱，并存储到结构体数组中
         strcpy(contacts[*num_contacts].email, str.c_str());
+    }else {
+        strcpy(contacts[*num_contacts].address, " ");
+        strcpy(contacts[*num_contacts].postcode, " ");
+        strcpy(contacts[*num_contacts].email, " ");
     }
     
-    							// 获取用户输入的电子邮件地址，并存储到结构体数组中
+    							
     (*num_contacts)++;															// 学生信息数量加1
     printf("\n\t\t\t是否继续添加?(Y/N):");// 提示用户是否继续添加
     char tmp;
