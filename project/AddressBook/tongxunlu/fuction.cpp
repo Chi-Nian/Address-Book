@@ -9,92 +9,135 @@
 
 #pragma warning(disable : 4996)
 #define MAX_TAGS 26  // A到Z的26个字母
+
 multimap <string, int> mp;
 using namespace std;
 string fileName = "contacts.txt";
 vector <int> idx;
+class group {
+public:
+    string group_name;
+    vector<int> indexs;
+
+};
+vector<group> groups;
 
 //-------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------Data----------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
 
 int readContacts(struct ContactRecord contacts[], int* num_contacts)
-
 {
-    ifstream inputFile("group.txt");
-
+    ifstream inputFile2("contacts.txt");
+    *num_contacts = 0;
     // 检查文件是否打开成功
-    if (!inputFile.is_open()) {
+    if (!inputFile2.is_open()) {
         cerr << "Failed to open file." << endl;
         return 1;
     }
+    string line2;
+    string name;
+    string phone;
+    string address;
+    string postcode;
+    string email;
+    while (getline(inputFile2, line2)) {
+        istringstream iss(line2);
 
-    string line;
-    while (getline(inputFile, line)) {
-        istringstream iss(line);
-        char key[20];
-        int value;
-        if (iss >> key >> value) {
-            mp.insert({ key, value });
+        if (getline(iss, name, ',') &&
+            getline(iss, phone, ',') &&
+            getline(iss, address, ',') &&
+            getline(iss, postcode, ',') &&
+            getline(iss, email)) {
+            strcpy(contacts[*num_contacts].name, name.c_str());
+            strcpy(contacts[*num_contacts].phone, phone.c_str());
+            strcpy(contacts[*num_contacts].address, address.c_str());
+            strcpy(contacts[*num_contacts].postcode, postcode.c_str());
+            strcpy(contacts[*num_contacts].email, email.c_str());
+            (*num_contacts)++;
         }
     }
 
     // 关闭文件
+<<<<<<< HEAD
+    inputFile2.close();
+=======
     inputFile.close();
 
-    FILE* fp = fopen("contacts.txt", "rb");             // 以二进制只读方式打开
-    if (fp == NULL) {
-        perror("打开文件失败");
-        return -1;
+    ifstream inputFile2("contacts.txt");
+    *num_contacts = 0;
+
+    // 检查文件是否打开成功
+    if (!inputFile2.is_open()) {
+        cerr << "Failed to open file." << endl;
+        return 1;
+    }
+    string line2;
+    string name;
+    string phone;
+    string address;
+    string postcode;
+    string email;
+    while (getline(inputFile2, line2)) {
+        istringstream iss(line2);
+        
+        if (getline(iss, name, ',')&&
+            getline(iss, phone, ',')&&
+            getline(iss, address, ',')&&
+            getline(iss, postcode, ',')&&
+            getline(iss, email)) {
+            strcpy(contacts[*num_contacts].name, name.c_str());
+            strcpy(contacts[*num_contacts].phone, phone.c_str());
+            strcpy(contacts[*num_contacts].address, address.c_str());
+            strcpy(contacts[*num_contacts].postcode, postcode.c_str());
+            strcpy(contacts[*num_contacts].email, email.c_str());
+            (*num_contacts)++;
+        }
     }
 
-    *num_contacts = 0;                                  // 初始化联系人数量为0
-
-    struct ContactRecord tmp;
-
-    //%20s的逻辑是 读取的时候一直读 直到遇见空格/换行/或者读满20个
-    while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //这里的格式化读取有问题，要按照指定的格式来读取，才能读取到
-        tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
-    {
-        contacts[*num_contacts] = tmp;
-        (*num_contacts)++;
-
-        // 打印
-        /*printf("联系人: %d\n", *num_contacts);
-        printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
-            tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
-        printf("-----------------------------------------------------------\n");*/
-        if (*num_contacts >= MAX_CONTACTS) break;        //限制最大联系人数量
-    }
-
-    fclose(fp);  // 关闭文件
-    fp = NULL;
-
+    // 关闭文件
+    inputFile2.close();
 
     return 0;
-}
 
+
+    //FILE* fp = fopen("contacts.txt", "rb");             // 以二进制只读方式打开
+    //if (fp == NULL) {
+    //    perror("打开文件失败");
+    //    return -1;
+    //}
+
+    //*num_contacts = 0;                                  // 初始化联系人数量为0
+
+    //struct ContactRecord tmp;
+
+    ////%20s的逻辑是 读取的时候一直读 直到遇见空格/换行/或者读满20个
+    //while (fscanf(fp, "%20s%20s%30s%20s%20s\n",         //这里的格式化读取有问题，要按照指定的格式来读取，才能读取到
+    //    tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email) == 5)
+    //{
+    //    contacts[*num_contacts] = tmp;
+    //    (*num_contacts)++;
+
+    //    // 打印
+    //    /*printf("联系人: %d\n", *num_contacts);
+    //    printf("Name: %s\nPhone: %s\nAddress: %s\nPostcode: %s\nEmail: %s\n",
+    //        tmp.name, tmp.phone, tmp.address, tmp.postcode, tmp.email);
+    //    printf("-----------------------------------------------------------\n");*/
+    //    if (*num_contacts >= MAX_CONTACTS) break;        //限制最大联系人数量
+    //}
+
+    //fclose(fp);  // 关闭文件
+    //fp = NULL;
+
+
+>>>>>>> 0ad31f3510bcaeae9f478faa40e1ec9a7b115629
+    return 0;
+}
 void entry_txt(string& line) {
     ofstream fin;//输入信息
     fin.open(fileName, ios::app);
     fin << line << endl;//'\n' 
     fin.close();
-    ofstream outputFile("group.txt");
-
-    // 检查文件是否打开成功
-    if (!outputFile.is_open()) {
-        std::cerr << "Failed to open file." << std::endl;
-        return;
-    }
-
-    // 将  写入文件
-    for (const auto& pair : mp) {
-        outputFile << pair.first << " " << pair.second << std::endl;
-    }
-
-    // 关闭文件
-    outputFile.close();
-
 }
 
 int writeContacts(struct ContactRecord contacts[], int num_contacts) {
@@ -105,9 +148,9 @@ int writeContacts(struct ContactRecord contacts[], int num_contacts) {
             continue;
         }
         string Person;
-        Person += contacts[i].name, Person += ' ';
-        Person += contacts[i].phone, Person += ' ', Person += contacts[i].address, Person += ' ';
-        Person += contacts[i].postcode, Person += ' ', Person += contacts[i].email;
+        Person += contacts[i].name, Person += ',';
+        Person += contacts[i].phone, Person += ',', Person += contacts[i].address, Person += ',';
+        Person += contacts[i].postcode, Person += ',', Person += contacts[i].email;
         if (Person == "") {
             return -1;
         }
@@ -269,29 +312,18 @@ int multiConditionSearch( ContactRecord contacts[], int num_contacts,  char* nam
 
 
 // 删除分组
-int deleteGroup(struct ContactRecord contacts[], int* num_contacts,  char* group)
+int deleteGroup(string group_name)
 {
-    string tmp(group);
-    return mp.erase(tmp);// 返回删除的联系人数量
-
-    //while (i < *num_contacts)
-    //{
-    //    if (strcmp(contacts[i].group, group) == 0)
-    //    {
-    //        // 删除当前联系人，覆盖该联系人并减少联系人数量
-    //        for (int j = i; j < *num_contacts - 1; j++)
-    //        {
-    //            contacts[j] = contacts[j + 1];
-    //        }
-    //        
-    //    }
-    //    else
-    //    {
-    //        i++;
-    //    }
-    //}
-
-    
+    int i = 0;
+    for (; i < groups.size(); i++) {
+        if (group_name == groups[i].group_name) {
+            groups[i].group_name[0] = '$';
+            return 0;
+        }
+    }
+    if (i == groups.size()) {
+        return -1;
+    }
 }
 
 // 2.12 按分组查找联系人
@@ -537,18 +569,34 @@ int addContact(ContactRecord contacts[], int* num_contacts)
     printf("\t\t\t输入姓名:");
     scanf("%s", contacts[*num_contacts].name);									// 获取用户输入的姓名，并存储到结构体数组中
     printf("\n\t\t\t输入电话号码:");
-    scanf("%s", contacts[*num_contacts].phone);								// 获取用户输入的电话号码，并存储到结构体数组中
-    printf("\n\t\t\t输入地址:");
-    scanf("%s", contacts[*num_contacts].address);								// 获取用户输入的地址，并存储到结构体数组中
-    printf("\n\t\t\t输入邮编:");
-    scanf("%s", contacts[*num_contacts].postcode);								//获取用户输入的邮编，并存储到结构体数组中
-    printf("\n\t\t\t输入e-mail:");
-    scanf("%s", contacts[*num_contacts].email);								// 获取用户输入的电子邮件地址，并存储到结构体数组中
-    (*num_contacts)++;															// 学生信息数量加1
-    printf("\n\t\t\t是否继续添加?(Y/N):");// 提示用户是否继续添加
+    scanf("%s", contacts[*num_contacts].phone);// 获取用户输入的电话号码，并存储到结构体数组中
+    cout << "你想继续添加地址，邮编，Email吗？(Y/N):\n";
     char op;
     cin >> op;
-    if (op == 'y' || op == 'Y')							// 如果用户输入的是’y’或’Y’，则递归调用adduser函数添加学生信息
+    if (op == 'y' || op == 'Y') {
+        string str;
+        printf("\n\t\t\t输入地址:");
+        getchar();// 防止输入回车
+        getline(cin,str,'\n');	// 获取用户输入的地址，并存储到结构体数组中
+        strcpy(contacts[*num_contacts].address, str.c_str());
+        printf("\n\t\t\t输入邮编:");
+        getline(cin,str,'\n');								//获取用户输入的邮编，并存储到结构体数组中
+        strcpy(contacts[*num_contacts].postcode, str.c_str());
+        printf("\n\t\t\t输入e-mail:");
+        getline(cin,str,'\n');								//获取用户输入的邮箱，并存储到结构体数组中
+        strcpy(contacts[*num_contacts].email, str.c_str());
+    }else {
+        strcpy(contacts[*num_contacts].address, " ");
+        strcpy(contacts[*num_contacts].postcode, " ");
+        strcpy(contacts[*num_contacts].email, " ");
+    }
+    
+    							
+    (*num_contacts)++;															// 学生信息数量加1
+    printf("\n\t\t\t是否继续添加?(Y/N):");// 提示用户是否继续添加
+    char tmp;
+    cin >> tmp;
+    if (tmp == 'y' || tmp == 'Y')							// 如果用户输入的是’y’或’Y’，则递归调用adduser函数添加学生信息
         addContact(contacts, num_contacts);													// 返回0,结束函数
     return 0;
 }
@@ -910,59 +958,74 @@ void erase_tag(char* string) {//删除标签
     }	
 }
 //
-int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts) {
-	//show_Contact_with_tag(contacts, num_contacts);
-
-	char* contactName;
-	char* tag;
-	system("cls");
-	printf("\t\t************* 请输入查找方式 ***********\n\n");
-	printf("\t\t\t1.姓名查找\n");
-	printf("\t\t\t2.电话查找\n");
-	printf("\t\t\t3.地址查找\n");
-	printf("\t\t\t4.邮编查找\n");
-	printf("\t\t\t5.邮箱查找\n");
-	printf("\t\t\t6.模糊查找\n");
+//-2 退出  -1 失败  >= 0 成功
+int search(struct ContactRecord contacts[], int num_contacts) {
+    char* contactName;
+    char* tag;
+    system("cls");
+    printf("\t\t************* 请输入查找方式 ***********\n\n");
+    printf("\t\t\t1.姓名查找\n");
+    printf("\t\t\t2.电话查找\n");
+    printf("\t\t\t3.地址查找\n");
+    printf("\t\t\t4.邮编查找\n");
+    printf("\t\t\t5.邮箱查找\n");
+    printf("\t\t\t6.模糊查找\n");
     printf("\t\t\t7.退出\n");
-	char s[80];
-	int a;
-	do {
-		printf("Enter you choice(0~8):");
-		scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
-		a = atoi(s);
-	} while (a < 1 || a>8);
-	system("cls");
-	if (a == 7) {
-		return 0;
-	}
-	char key[80];
-	printf("\t\t输入查找联系人信息:\n");
-	scanf("%s", &key);
-	int res = -1;
-	switch (a) {
-	case 1:
-		res = searchContactByName1(contacts, num_contacts, key); break;
-	case 2:
-		res = searchContactByPhone(contacts, num_contacts, key); break;
-	case 3:
-		res = searchContactByAddress(contacts, num_contacts, key); break;
-	case 4:
-		res = searchContactByPostcode(contacts, num_contacts, key); break;
-	case 5:
-		res = searchContactByEmail(contacts, num_contacts, key); break;
-	case 6:
-		res = fuzzySearchContacts(contacts, num_contacts, key); break;
-	case 7:return 0; break;
-	}
-	if (res >= 0) {
-		printf("\t\t查找成功\n");
-		Print(contacts, res);
+    char s[80];
+    int a;
+    do {
+        printf("Enter you choice(0~8):");
+        scanf("%s", s);												// 获取用户输入的字符串，并存储到字符数组s中
+        a = atoi(s);
+    } while (a < 1 || a>8);
+    system("cls");
+    if (a == 7) {
+        return -2;
+    }
+    char key[80];
+    printf("\t\t输入查找联系人信息:\n");
+    scanf("%s", &key);
+    int res = -1;
+    switch (a) {
+    case 1:
+        res = searchContactByName1(contacts, num_contacts, key); break;
+    case 2:
+        res = searchContactByPhone(contacts, num_contacts, key); break;
+    case 3:
+        res = searchContactByAddress(contacts, num_contacts, key); break;
+    case 4:
+        res = searchContactByPostcode(contacts, num_contacts, key); break;
+    case 5:
+        res = searchContactByEmail(contacts, num_contacts, key); break;
+    case 6:
+        res = fuzzySearchContacts(contacts, num_contacts, key); break;
+    case 7:return -2; break;
+    }
+    if (res >= 0) {
+        return res;
+    }
+    else {
+        return -1;
+    }
+}
+int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts) {
+
+	//show_Contact_with_tag(contacts, num_contacts);
+    int res = search(contacts, num_contacts);
+    if (res ==-1) {//查找失败
+        printf("\t\t查找失败\n");
+    }
+    else if(res >= 0){
+        printf("\t\t查找成功\n");
+        Print(contacts, res);
         system("pause");
-		erase_tag(contacts[res].name);
-	}
-	else {
-		printf("\t\t查找失败\n");
-	}
+        erase_tag(contacts[res].name);
+    }
+    else if (res == -2) {
+        return 0;
+    }
+	
+
     cout << "是否继续删除联系人标签? y/n" << endl;
     string flag3;
     cin >> flag3;
@@ -1234,44 +1297,201 @@ void showInsertRecordInterface(struct ContactRecord contacts[], int* num_contact
     }
 }
 
-void showGroupManagementInterface(ContactRecord contacts[], int *num_contacts)
-{
-    char* tmp = NULL;
-    for (auto it = mp.begin(); it != mp.end(); it++) {
-        if (contacts[it->second].name[0] == '$') {
+void read_groups() {
 
-                continue;
-         }
-        cout<<"组名：" << it->first << endl;
-        
-        printf("\t\t\t姓名:%s\n", contacts[it->second].name);
-        printf("\t\t\t电话:%s\n", contacts[it->second].phone);
-        printf("\t\t\t地址:%s\n", contacts[it->second].address);
-        printf("\t\t\t邮编:%s\n", contacts[it->second].postcode);
-        printf("\t\t\tEmail:%s\n", contacts[it->second].email);
+    ifstream inputFile("group.txt");
+    // 检查文件是否打开成功
+    if (!inputFile.is_open()) {
+        cerr << "Failed to open file." << endl;
+        return;
     }
-    char a[20] = "";//addGroup把输入和处理合在了一起
-    cout << "1.增加分组\n2.删除分组\n3.按其他键返回主菜单\n";
-    getchar();
-    char op;
-    op = getchar();
-    if (op == '1')
-        addGroup(contacts, num_contacts, a);
-    else if (op == '2') {
-        cout << "请输入你要删除的组名";
-        cin >> a;
-        int m=deleteGroup(contacts, num_contacts, a);
-        if (m == 0) cout << "你想删除的组不存在\n";
-        
+    string line;
+    while (getline(inputFile, line)) {
+        istringstream iss(line);
+        string key;
+        iss >> key;
+
+        group new_group;
+        new_group.group_name = key;
+
+        int value;
+        while (iss >> value) {
+            new_group.indexs.push_back(value);
+        }
+
+        groups.push_back(new_group); // 将新的 group 对象添加到 groups 向量中
+    }
+    // 关闭文件
+    inputFile.close();
+}
+
+int add_contact_to_group(ContactRecord contacts[], int num_contacts) {
+    
+
+    string g_name;
+    cout << "输入组名：" << endl;
+    cin >> g_name;
+   /* while (g_name.empty() || g_name.size() > 1 || (g_name[0] < 1 && g_name[0]>4)) {
+        cout << "输入有误，请重新输入 " << endl;
+        cin >> g_name;
+    }*/
+    int i = 0;
+    for (; i < groups.size(); i++) {
+        if (g_name == groups[i].group_name) {
+            cout << "找到了" << endl;
+            system("pause");
+            break;
+        }
+    }
+    if (i == groups.size()) {
+        cout << "无此组名" << endl;
+        cout << "是否退出? y/n" << endl;
+        string judge;
+        cin >> judge;
+        while (judge.empty() || judge.size() > 1 || (judge[0] !='y' && judge[0] != 'n')) {
+            cout << "输入有误，请重新输入 " << endl;
+            cin >> judge;
+        }
+        if (judge[0] == 'n') {
+            return 0;
+        }
         else {
-            cout << "已移除" << a << "组内共计" << m << "人";
+            add_contact_to_group(contacts, num_contacts);
+        }
+    }
+
+	while (1) {
+
+
+		int res = search(contacts, num_contacts);
+		if (res == -1) {//查找失败
+			printf("\t\t查找失败\n");
+            cout << "是否退出？ y/n" << endl;
+            string a;
+            cin >> a;
+            while (a.empty() || a.size() > 1 || (a[0] != 'y' && a[0] != 'n')) {
+                cout << "输入有误，请重新输入 " << endl;
+                cin >> a;
+            }
+            if (a[0] == 'y') {
+                return 0;
+            }
+		}
+		else if (res >= 0) {
+			printf("\t\t查找成功\n");
+			Print(contacts, res);
+			groups[i].indexs.push_back(res);
+			cout << "该联系人已添加到" << g_name << endl;
+			system("pause");
+			cout << "是否继续添加联系人？ y/n" << endl;
+			string judge1;
+			cin >> judge1;
+			while (judge1.empty() || judge1.size() > 1 || (judge1[0] != 'y' && judge1[0] != 'n')) {
+				cout << "输入有误，请重新输入 " << endl;
+				cin >> judge1;
+			}
+			if (judge1[0] == 'n') {
+				return 0;
+			}		
+		}
+		else if (res == -2) {
+			return 0;
+		}
+	}
+    return 0;
+}
+
+string Save_groups(group value) {
+	string line;
+	line += value.group_name;
+    line += " ";
+	string oss;
+	for (int i = 0; i < value.indexs.size(); ++i) {
+        string buffer;
+        while (value.indexs[i]>0) {
+            buffer += '0' + value.indexs[i] % 10;
+            value.indexs[i] /= 10;
+        }
+        reverse(buffer.begin(), buffer.end());
+		oss += buffer;
+		if (i < value.indexs.size() - 1) {
+			oss += " ";
+		}
+		// 添加空格分隔符，除了最后一个元素
+	}
+	// 获取构建好的字符串
+	line += oss;
+	
+	return line;
+	// 关闭文件流
+	
+}
+
+
+
+void showGroupManagementInterface(ContactRecord contacts[], int* num_contacts)
+{
+    
+	char* tmp = NULL;
+	for (int i = 0; i < groups.size(); i++) {
+        if (groups[i].group_name[0] == '$') {
+            continue;
+        }
+		cout << "组名：" << groups[i].group_name << endl;
+		for (int x = 0; x < groups[i].indexs.size(); x++) {
+			printf("\t\t\t姓名:%s\n", contacts[groups[i].indexs[x]].name);
+			printf("\t\t\t电话:%s\n", contacts[groups[i].indexs[x]].phone);
+			printf("\t\t\t地址:%s\n", contacts[groups[i].indexs[x]].address);
+			printf("\t\t\t邮编:%s\n", contacts[groups[i].indexs[x]].postcode);
+			printf("\t\t\tEmail:%s\n", contacts[groups[i].indexs[x]].email);
+			cout << endl << endl;
+		}
+
+	}
+	char a[20] = "";//addGroup把输入和处理合在了一起
+	cout << "1.增加分组\n2.删除分组\n3.向已存在的分组添加联系人\n其他：保存修改并返回主菜单\n";
+	getchar();
+	char op;
+	op = getchar();
+	if (op == '1') {
+		group new_group;
+		cout << "输入组名" << endl;
+		cin >> new_group.group_name;
+		groups.push_back(new_group);
+
+	}
+	else if (op == '2') {
+        string group_name1;
+		cout << "请输入你要删除的组名";
+		cin >> group_name1;
+		int m = deleteGroup(group_name1);
+		if (m == -1) cout << "你想删除的组不存在\n";
+		else {
+			cout << "已移除" << a << "组内共计" << m << "人";
         }
         cout << "按任意键返回主菜单\n";
         getchar();//吞掉之前的换行
         getchar();//吞掉任意键
     }   
-    else
-        return;
+    else if (op == '3') {
+        add_contact_to_group(contacts, *num_contacts);
+	}
+	else {
+		ofstream ofs("group.txt");
+		// 检查文件是否成功打开
+		if (!ofs) {
+			cerr << "Failed to open file: " << "group.txt" << endl;
+			return;
+		}
+		for (int i = 0; i < groups.size(); i++) {
+            if (groups[i].group_name[0] == '$') {
+                continue;
+            }
+            ofs << Save_groups(groups[i]) << endl;
+		}
+		ofs.close();
+	}
+	return;
 }
 
 //3.9 显示标签系统界面(拓展)
@@ -1465,7 +1685,7 @@ void showEditRecordInterface(struct ContactRecord contacts[], int num_contacts) 
 wohuilaile:  //goto标志 末尾choice重新输入
 
     int index = choice - 1;     //将序号转换为数组索引
-    int flag = -1;//作为while循环推出标记 选6后加加
+    int flag = -1;//作为while循环推出标记 选case:6后flag++
     if (index >= 0 && index < num_contacts) {
         while (1) {
                 cout << "请输入你想修改的选项1.姓名   2.电话    3.地址    4.邮编    5.邮箱    6.退出\n";

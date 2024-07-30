@@ -1,8 +1,18 @@
 ﻿  fuction.cpp
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(185,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(275,20): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(916,8): warning C4101: “contactName”: 未引用的局部变量
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(917,8): warning C4101: “tag”: 未引用的局部变量
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1510,16): warning C4305: “初始化”: 从“int”到“char”截断
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1510,18): warning C4309: “初始化”: 截断常量值
+<<<<<<< HEAD
+D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(157,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(892,11): warning C4101: “contactName”: 未引用的局部变量
+D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(893,11): warning C4101: “tag”: 未引用的局部变量
+D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1659,16): warning C4305: “初始化”: 从“int”到“char”截断
+D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1659,18): warning C4309: “初始化”: 截断常量值
+D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(256,1): warning C4715: “deleteGroup”: 不是所有的控件路径都返回值
   tongxunlu.vcxproj -> D:\Git Hub Clone\Address-Book\project\AddressBook\x64\Debug\tongxunlu.exe
+=======
+D:\clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(223,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(313,20): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
+D:\clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(970,8): warning C4101: “contactName”: 未引用的局部变量
+D:\clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(971,8): warning C4101: “tag”: 未引用的局部变量
+D:\clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1564,16): warning C4305: “初始化”: 从“int”到“char”截断
+D:\clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1564,18): warning C4309: “初始化”: 截断常量值
+  tongxunlu.vcxproj -> D:\clone\Address-Book\project\AddressBook\x64\Debug\tongxunlu.exe
+>>>>>>> 0ad31f3510bcaeae9f478faa40e1ec9a7b115629
