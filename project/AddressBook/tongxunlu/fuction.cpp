@@ -9,6 +9,7 @@
 
 #pragma warning(disable : 4996)
 #define MAX_TAGS 26  // A到Z的26个字母
+
 multimap <string, int> mp;
 using namespace std;
 string fileName = "contacts.txt";
@@ -537,18 +538,29 @@ int addContact(ContactRecord contacts[], int* num_contacts)
     printf("\t\t\t输入姓名:");
     scanf("%s", contacts[*num_contacts].name);									// 获取用户输入的姓名，并存储到结构体数组中
     printf("\n\t\t\t输入电话号码:");
-    scanf("%s", contacts[*num_contacts].phone);								// 获取用户输入的电话号码，并存储到结构体数组中
-    printf("\n\t\t\t输入地址:");
-    scanf("%s", contacts[*num_contacts].address);								// 获取用户输入的地址，并存储到结构体数组中
-    printf("\n\t\t\t输入邮编:");
-    scanf("%s", contacts[*num_contacts].postcode);								//获取用户输入的邮编，并存储到结构体数组中
-    printf("\n\t\t\t输入e-mail:");
-    scanf("%s", contacts[*num_contacts].email);								// 获取用户输入的电子邮件地址，并存储到结构体数组中
+    scanf("%s", contacts[*num_contacts].phone);// 获取用户输入的电话号码，并存储到结构体数组中
+    cout << "你想继续添加地址，邮编，Email吗？(Y/N):\n";
+    char tmp;
+    cin >> tmp;
+    if (tmp == 'y' || tmp == 'Y') {
+        string str;
+        printf("\n\t\t\t输入地址:");
+        getline(cin,str,'\n');	// 获取用户输入的地址，并存储到结构体数组中
+        strcpy(contacts[*num_contacts].address, str.c_str());
+        printf("\n\t\t\t输入邮编:");
+        getline(cin,str,'\n');								//获取用户输入的邮编，并存储到结构体数组中
+        strcpy(contacts[*num_contacts].postcode, str.c_str());
+        printf("\n\t\t\t输入e-mail:");
+        getline(cin,str,'\n');								//获取用户输入的邮箱，并存储到结构体数组中
+        strcpy(contacts[*num_contacts].email, str.c_str());
+    }
+    
+    							// 获取用户输入的电子邮件地址，并存储到结构体数组中
     (*num_contacts)++;															// 学生信息数量加1
     printf("\n\t\t\t是否继续添加?(Y/N):");// 提示用户是否继续添加
-    char op;
-    cin >> op;
-    if (op == 'y' || op == 'Y')							// 如果用户输入的是’y’或’Y’，则递归调用adduser函数添加学生信息
+    char tmp;
+    cin >> tmp;
+    if (tmp == 'y' || tmp == 'Y')							// 如果用户输入的是’y’或’Y’，则递归调用adduser函数添加学生信息
         addContact(contacts, num_contacts);													// 返回0,结束函数
     return 0;
 }
