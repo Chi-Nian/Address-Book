@@ -1336,10 +1336,16 @@ string Save_groups(group value) {
 	string oss;
 	for (int i = 0; i < value.indexs.size(); ++i) {
         string buffer;
-        while (value.indexs[i]>0) {
-            buffer += '0' + value.indexs[i] % 10;
-            value.indexs[i] /= 10;
+        if (value.indexs[i] == 0) {
+            buffer += '0';
         }
+        else {
+            while (value.indexs[i] > 0) {
+                buffer += '0' + value.indexs[i] % 10;
+                value.indexs[i] /= 10;
+            }
+        }
+        
         reverse(buffer.begin(), buffer.end());
 		oss += buffer;
 		if (i < value.indexs.size() - 1) {
