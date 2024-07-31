@@ -1298,7 +1298,7 @@ int add_contact_to_group(ContactRecord contacts[], int num_contacts) {
             string a;
             cin >> a;
             while (a.empty() || a.size() > 1 || (a[0] != 'y' && a[0] != 'n')) {
-                cout << "输入有误，请重新输入 " << endl;
+                cout << "输入有误，请重新输入  是否退出？ y/n" << endl;
                 cin >> a;
             }
             if (a[0] == 'y') {
@@ -1386,7 +1386,8 @@ void showGroupManagementInterface(ContactRecord contacts[], int* num_contacts)
 		cout << "输入组名" << endl;
 		cin >> new_group.group_name;
 		groups.push_back(new_group);
-
+        system("pause");
+        showGroupManagementInterface(contacts, num_contacts);
 	}
 	else if (op == '2') {
         string group_name1;
@@ -1395,14 +1396,18 @@ void showGroupManagementInterface(ContactRecord contacts[], int* num_contacts)
 		int m = deleteGroup(group_name1);
 		if (m == -1) cout << "你想删除的组不存在\n";
 		else {
-			cout << "已移除" << a << "组内共计" << m << "人";
+            cout << "已移除该组" << endl;
         }
-        cout << "按任意键返回主菜单\n";
-        getchar();//吞掉之前的换行
-        getchar();//吞掉任意键
+        system("pause");
+        showGroupManagementInterface(contacts, num_contacts);
+        
     }   
     else if (op == '3') {
-        add_contact_to_group(contacts, *num_contacts);
+        switch (add_contact_to_group(contacts, *num_contacts)) {
+        case 0:
+            showGroupManagementInterface(contacts, num_contacts); break;
+        default: return;
+        }
 	}
 	else {
 		ofstream ofs("group.txt");
