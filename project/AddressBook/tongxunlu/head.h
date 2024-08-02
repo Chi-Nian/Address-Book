@@ -23,10 +23,14 @@ extern  vector   < int> idx;
    // char group[20];
 };
 
+ class group {
+ public:
+     string group_name;
+     vector<int> indexs;
 
-
+ };
 //1.2读取联系人信息
-int readContacts(struct ContactRecord contacts[], int* num_contacts);
+extern int readContacts(struct ContactRecord contacts[], int* num_contacts);
 
 /*
 负责人:
@@ -76,7 +80,7 @@ extern bool authenticateUser(const char* filename, const char* username, const c
 
 
 
-void read_groups();
+
 
 
 
@@ -255,15 +259,28 @@ extern int searchContactsByGroup(struct ContactRecord contacts[], int num_contac
 extern int addGroup(struct ContactRecord contacts[], int * num_contacts, char* group);
 
 // 2.14 删除分组
-extern int deleteGroup( string group);
+extern int deleteGroup(struct ContactRecord contacts[], int* num_contacts, char* group);
 
 // 2.15 为联系人添加标签
-extern int addTagToContact(struct ContactRecord contacts[], int num_contacts, char* contactName, char* tag);
+int addTagToContact(struct ContactRecord* contact, int num_contacts);
 
 // 2.16 删除联系人标签
 extern int deleteTagFromContact(struct ContactRecord contacts[], int num_contacts, char* contactName, char* tag);
 
+//额外函数
+void show_Contact_with_tag(struct ContactRecord contacts[], int num_contacts);
 
+int searchContactByName1(ContactRecord contacts[], int num_contacts, char* name);
+
+int search(struct ContactRecord contacts[], int num_contacts);
+
+string Save_groups(group value);
+
+void Print(struct ContactRecord contacts[], int i);
+
+int add_contact_to_group(ContactRecord contacts[], int num_contacts);
+
+void read_groups();
 
 
 

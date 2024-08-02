@@ -7,11 +7,11 @@ int main() {
 	ContactRecord contacts[MAX_CONTACTS];
 	int num_contacts=0;
 	int flag = -1;
-	
 	flag=showLoginInterface();
 	if (flag == 0) {
 		read_groups();
-		readContacts(contacts,&num_contacts);
+		
+		readContacts(contacts,& num_contacts);
 		menuSelect(contacts, &num_contacts);
 		writeContacts(contacts, num_contacts);
 	}

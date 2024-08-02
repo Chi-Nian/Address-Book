@@ -1,8 +1,13 @@
-﻿  fuction.cpp
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(156,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(891,11): warning C4101: “contactName”: 未引用的局部变量
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(892,11): warning C4101: “tag”: 未引用的局部变量
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1672,16): warning C4305: “初始化”: 从“int”到“char”截断
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1672,18): warning C4309: “初始化”: 截断常量值
-D:\Git Hub Clone\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(255,1): warning C4715: “deleteGroup”: 不是所有的控件路径都返回值
-  tongxunlu.vcxproj -> D:\Git Hub Clone\Address-Book\project\AddressBook\x64\Debug\tongxunlu.exe
+﻿  Main.cpp
+  fuction.cpp
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(162,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(726,21): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1094,16): warning C4305: “初始化”: 从“int”到“char”截断
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1094,18): warning C4309: “初始化”: 截断常量值
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1576,11): warning C4101: “contactName”: 未引用的局部变量
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1577,11): warning C4101: “tag”: 未引用的局部变量
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(1786,29): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+  正在生成代码...
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(238,1): warning C4715: “deleteGroup”: 不是所有的控件路径都返回值
+C:\Users\111\Desktop\Address-Book\project\AddressBook\tongxunlu\fuction.cpp(753,1): warning C4715: “showLoginInterface”: 不是所有的控件路径都返回值
+  tongxunlu.vcxproj -> C:\Users\111\Desktop\Address-Book\project\AddressBook\x64\Debug\tongxunlu.exe
