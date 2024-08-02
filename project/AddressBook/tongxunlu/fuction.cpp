@@ -1382,11 +1382,15 @@ void showGroupManagementInterface(ContactRecord contacts[], int* num_contacts)
 
 	}
 	char a[20] = "";//addGroup把输入和处理合在了一起
-	cout << "1.增加分组\n2.删除分组\n3.向已存在的分组添加联系人\n其他：保存修改并返回主菜单\n";
-	getchar();
-	char op;
-	op = getchar();
-	if (op == '1') {
+	cout << "1.增加分组\n2.删除分组\n3.向已存在的分组添加联系人\n4.保存修改并返回主菜单\n";
+    string op;
+    cin >> op;
+    while (op.empty() || op.size() > 1 || (op[0] != '1' && op[0] != '2' && op[0] != '3' && op[0] != '4')) {
+        cout << "输入有误，请重新输入" << endl;
+        cin >> op;
+    }
+    
+	if (op[0] == '1') {
 		group new_group;
 		cout << "输入组名" << endl;
 		cin >> new_group.group_name;
@@ -1394,7 +1398,7 @@ void showGroupManagementInterface(ContactRecord contacts[], int* num_contacts)
         system("pause");
         showGroupManagementInterface(contacts, num_contacts);
 	}
-	else if (op == '2') {
+	else if (op[0] == '2') {
         string group_name1;
 		cout << "请输入你要删除的组名";
 		cin >> group_name1;
@@ -1407,14 +1411,14 @@ void showGroupManagementInterface(ContactRecord contacts[], int* num_contacts)
         showGroupManagementInterface(contacts, num_contacts);
         
     }   
-    else if (op == '3') {
+    else if (op[0] == '3') {
         switch (add_contact_to_group(contacts, *num_contacts)) {
         case 0:
             showGroupManagementInterface(contacts, num_contacts); break;
         default: return;
         }
 	}
-	else {
+    else if (op[0] == '4') {
 		ofstream ofs("group.txt");
 		// 检查文件是否成功打开
 		if (!ofs) {
