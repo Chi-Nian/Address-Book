@@ -1255,7 +1255,7 @@ void read_groups() {
 
 int add_contact_to_group(ContactRecord contacts[], int num_contacts) {
     
-
+again:
     string g_name;
     cout << "输入组名：" << endl;
     cin >> g_name;
@@ -1280,52 +1280,51 @@ int add_contact_to_group(ContactRecord contacts[], int num_contacts) {
             cout << "输入有误，请重新输入 " << endl;
             cin >> judge;
         }
-        if (judge[0] == 'n') {
+        if (judge[0] == 'y') {
             return 0;
         }
         else {
-            add_contact_to_group(contacts, num_contacts);
+            goto again;
         }
     }
-
-	while (1) {
-
-
-		int res = search(contacts, num_contacts);
-		if (res == -1) {//查找失败
-			printf("\t\t查找失败\n");
-            cout << "是否退出？ y/n" << endl;
-            string a;
-            cin >> a;
-            while (a.empty() || a.size() > 1 || (a[0] != 'y' && a[0] != 'n')) {
-                cout << "输入有误，请重新输入  是否退出？ y/n" << endl;
+    else {
+        while (1) {
+            int res = search(contacts, num_contacts);
+            if (res == -1) {//查找失败
+                printf("\t\t查找失败\n");
+                cout << "是否退出？ y/n" << endl;
+                string a;
                 cin >> a;
+                while (a.empty() || a.size() > 1 || (a[0] != 'y' && a[0] != 'n')) {
+                    cout << "输入有误，请重新输入  是否退出？ y/n" << endl;
+                    cin >> a;
+                }
+                if (a[0] == 'y') {
+                    return 0;
+                }
             }
-            if (a[0] == 'y') {
+            else if (res >= 0) {
+                printf("\t\t查找成功\n");
+                Print(contacts, res);
+                groups[i].indexs.push_back(res);
+                cout << "该联系人已添加到" << g_name << endl;
+                system("pause");
+                cout << "是否继续添加联系人？ y/n" << endl;
+                string judge1;
+                cin >> judge1;
+                while (judge1.empty() || judge1.size() > 1 || (judge1[0] != 'y' && judge1[0] != 'n')) {
+                    cout << "输入有误，请重新输入 " << endl;
+                    cin >> judge1;
+                }
+                if (judge1[0] == 'n') {
+                    return 0;
+                }
+            }
+            else if (res == -2) {
                 return 0;
             }
-		}
-		else if (res >= 0) {
-			printf("\t\t查找成功\n");
-			Print(contacts, res);
-			groups[i].indexs.push_back(res);
-			cout << "该联系人已添加到" << g_name << endl;
-			system("pause");
-			cout << "是否继续添加联系人？ y/n" << endl;
-			string judge1;
-			cin >> judge1;
-			while (judge1.empty() || judge1.size() > 1 || (judge1[0] != 'y' && judge1[0] != 'n')) {
-				cout << "输入有误，请重新输入 " << endl;
-				cin >> judge1;
-			}
-			if (judge1[0] == 'n') {
-				return 0;
-			}		
-		}
-		else if (res == -2) {
-			return 0;
-		}
-	}
+        }
+    }
     return 0;
 }
 
