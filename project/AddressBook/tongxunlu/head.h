@@ -23,10 +23,8 @@ extern  vector   < int> idx;
    // char group[20];
 };
 
-
-
 //1.2读取联系人信息
-int readContacts(struct ContactRecord contacts[], int* num_contacts);
+extern int readContacts(struct ContactRecord contacts[], int* num_contacts);
 
 /*
 负责人:
@@ -76,7 +74,7 @@ extern bool authenticateUser(const char* filename, const char* username, const c
 
 
 
-void read_groups();
+
 
 
 
@@ -255,7 +253,7 @@ extern int searchContactsByGroup(struct ContactRecord contacts[], int num_contac
 extern int addGroup(struct ContactRecord contacts[], int * num_contacts, char* group);
 
 // 2.14 删除分组
-extern int deleteGroup( string group);
+extern int deleteGroup(struct ContactRecord contacts[], int* num_contacts, char* group);
 
 // 2.15 为联系人添加标签
 extern int addTagToContact(struct ContactRecord contacts[], int num_contacts, char* contactName, char* tag);
